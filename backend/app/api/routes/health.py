@@ -4,5 +4,5 @@ router = APIRouter()
 
 
 @router.get("/")
-async def health():
-    return {"status": "ok", "service": "dclaw-migrate"}
+async def health_check():
+    return {"status": "ok"}
