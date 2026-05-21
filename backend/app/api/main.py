@@ -1,10 +1,16 @@
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
 from app.core.database import init_db
 from app.api.routes import health
+from app.api.v1 import (
+    connections, jobs, dashboard,
+    mappings, logs, ai, validations,
+    waves, assets, test_cases, cutover, optimization, runbooks,
+)
 
 
 @asynccontextmanager
@@ -13,11 +19,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(
-    title=settings.app_name,
-    version="1.0.0",
-    lifespan=lifespan,
-)
+app = FastAPI(title=settings.app_name, version="1.0.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -27,7 +29,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Core
 app.include_router(health.router, prefix="/health", tags=["health"])
-# TODO: Wire v1 routers here after creating them
-# from app.api.v1 import some_router
-# app.include_router(some_router.router, prefix="/api/v1/some", tags=["some"])
+app.include_router(connections.router, prefix="/api/v1/connections", tags=["connections"])
+app.include_router(jobs.router, prefix="/api/v1/jobs", tags=["jobs"])
+app.include_router(dashboard.router, prefix="/api/v1/dashboard", tags=["dashboard"])
+
+# Job sub-resources
+app.include_router(mappings.router, prefix="/api/v1/jobs", tags=["mappings"])
+app.include_router(logs.router, prefix="/api/v1/jobs", tags=["logs"])
+app.include_router(validations.router, prefix="/api/v1/jobs", tags=["validations"])
+app.include_router(test_cases.router, prefix="/api/v1/jobs", tags=["test-cases"])
+app.include_router(cutover.router, prefix="/api/v1/jobs", tags=["cutover"])
+app.include_router(optimization.router, prefix="/api/v1/jobs", tags=["optimization"])
+app.include_router(runbooks.router, prefix="/api/v1/jobs", tags=["runbooks"])
+
+# P0.3 Waves
+app.include_router(waves.router, prefix="/api/v1/waves", tags=["waves"])
+
+# P1.1 Assets
+app.include_router(assets.router, prefix="/api/v1/assets", tags=["assets"])
+
+# AI
+app.include_router(ai.router, prefix="/api/v1/ai", tags=["ai"])

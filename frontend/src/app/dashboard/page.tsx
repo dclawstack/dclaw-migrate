@@ -1,120 +1,112 @@
 "use client";
 
-import { useState } from "react";
-import { ArrowRightLeft } from "lucide-react";
-import { api, MigrationPlan } from "@/lib/api";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { dashboardApi, DashboardStats, MigrationJob } from "@/lib/api";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+const STATUS_VARIANT: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
+  draft: "outline",
+  ready: "secondary",
+  running: "default",
+  completed: "secondary",
+  failed: "destructive",
+  paused: "outline",
+};
+
+function StatCard({ label, value, sub }: { label: string; value: number; sub?: string }) {
+  return (
+    <Card>
+      <CardHeader className="pb-1">
+        <CardTitle className="text-sm font-medium text-gray-500">{label}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p className="text-3xl font-bold text-amber-500">{value}</p>
+        {sub && <p className="text-xs text-gray-400 mt-1">{sub}</p>}
+      </CardContent>
+    </Card>
+  );
+}
 
 export default function DashboardPage() {
-  const [source, setSource] = useState("");
-  const [target, setTarget] = useState("");
-  const [result, setResult] = useState<MigrationPlan | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const assess = async () => {
-    if (!source || !target) return;
-    setLoading(true);
-    try {
-      const plan = await api<MigrationPlan>("/plans", {
-        method: "POST",
-        body: JSON.stringify({ source, target }),
-      });
-      setResult(plan);
-    } catch {
-      setResult({
-        id: "mock-id",
-        source,
-        target,
-        complexity_score: Math.floor(Math.random() * 100) + 1,
-        estimated_downtime_hours: Number((Math.random() * 7.5 + 0.5).toFixed(1)),
-        risk_items: ["Schema incompatibility"],
-        cost_estimate: Math.floor(Math.random() * 49000) + 1000,
-        created_at: new Date().toISOString(),
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    dashboardApi.stats()
+      .then(setStats)
+      .catch((e) => setError(e.message));
+  }, []);
+
+  if (error) {
+    return (
+      <div className="p-8 text-red-500">
+        Failed to load dashboard: {error}
+      </div>
+    );
+  }
 
   return (
-    <main className="min-h-screen bg-gray-50 p-8">
-      <div className="mx-auto max-w-3xl">
-        <div className="mb-8 flex items-center gap-3">
-          <ArrowRightLeft className="h-8 w-8 text-brand" />
-          <h1 className="text-3xl font-bold text-brand">DClaw Migrate</h1>
-        </div>
+    <div className="p-8 max-w-6xl mx-auto">
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">Dashboard</h1>
 
-        <div className="rounded-lg bg-white p-6 shadow">
-          <div className="grid gap-4 md:grid-cols-2">
-            <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
-                Source environment
-              </label>
-              <input
-                type="text"
-                value={source}
-                onChange={(e) => setSource(e.target.value)}
-                placeholder="e.g. AWS us-east-1"
-                className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
-              />
-            </div>
-            <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
-                Target environment
-              </label>
-              <input
-                type="text"
-                value={target}
-                onChange={(e) => setTarget(e.target.value)}
-                placeholder="e.g. GCP europe-west1"
-                className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
-              />
-            </div>
-          </div>
-          <button
-            onClick={assess}
-            disabled={loading}
-            className="mt-6 w-full rounded-md bg-brand py-2 font-semibold text-white hover:bg-amber-600 disabled:opacity-50"
-          >
-            {loading ? "Assessing..." : "Assess Migration"}
-          </button>
-        </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <StatCard label="Connections" value={stats?.total_connections ?? 0} />
+        <StatCard label="Total Jobs" value={stats?.total_jobs ?? 0} />
+        <StatCard label="Running" value={stats?.running_jobs ?? 0} />
+        <StatCard
+          label="Completed"
+          value={stats?.completed_jobs ?? 0}
+          sub={stats?.failed_jobs ? `${stats.failed_jobs} failed` : undefined}
+        />
+      </div>
 
-        {result && (
-          <div className="mt-6 rounded-lg bg-white p-6 shadow">
-            <h2 className="mb-4 text-xl font-semibold text-gray-800">
-              Migration Assessment
-            </h2>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="rounded-md bg-gray-50 p-4">
-                <p className="text-sm text-gray-500">Complexity score</p>
-                <p className="text-2xl font-bold text-brand">
-                  {result.complexity_score}
-                </p>
-              </div>
-              <div className="rounded-md bg-gray-50 p-4">
-                <p className="text-sm text-gray-500">Estimated downtime</p>
-                <p className="text-2xl font-bold text-brand">
-                  {result.estimated_downtime_hours}h
-                </p>
-              </div>
-              <div className="rounded-md bg-gray-50 p-4">
-                <p className="text-sm text-gray-500">Risk items</p>
-                <ul className="mt-1 list-inside list-disc text-sm text-gray-700">
-                  {result.risk_items.map((risk, i) => (
-                    <li key={i}>{risk}</li>
-                  ))}
-                </ul>
-              </div>
-              <div className="rounded-md bg-gray-50 p-4">
-                <p className="text-sm text-gray-500">Cost estimate</p>
-                <p className="text-2xl font-bold text-brand">
-                  ${result.cost_estimate.toLocaleString()}
-                </p>
-              </div>
-            </div>
+      <div className="bg-white rounded-lg border shadow-sm">
+        <div className="px-6 py-4 border-b flex items-center justify-between">
+          <h2 className="font-semibold text-gray-700">Recent Jobs</h2>
+          <Link href="/jobs" className="text-sm text-amber-500 hover:underline">
+            View all
+          </Link>
+        </div>
+        {!stats || stats.recent_jobs.length === 0 ? (
+          <div className="px-6 py-8 text-center text-gray-400 text-sm">
+            No jobs yet.{" "}
+            <Link href="/jobs" className="text-amber-500 hover:underline">
+              Create your first job →
+            </Link>
           </div>
+        ) : (
+          <table className="w-full text-sm">
+            <thead className="bg-gray-50 text-gray-500 uppercase text-xs">
+              <tr>
+                <th className="px-6 py-3 text-left">Name</th>
+                <th className="px-6 py-3 text-left">Type</th>
+                <th className="px-6 py-3 text-left">Source → Target</th>
+                <th className="px-6 py-3 text-left">Status</th>
+                <th className="px-6 py-3 text-left">Created</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y">
+              {stats.recent_jobs.map((job: MigrationJob) => (
+                <tr key={job.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 font-medium text-gray-800">{job.name}</td>
+                  <td className="px-6 py-4 text-gray-500">{job.migration_type.replace("_", " ")}</td>
+                  <td className="px-6 py-4 text-gray-500">
+                    {job.source_connection?.name ?? "—"} → {job.target_connection?.name ?? "—"}
+                  </td>
+                  <td className="px-6 py-4">
+                    <Badge variant={STATUS_VARIANT[job.status] ?? "outline"}>{job.status}</Badge>
+                  </td>
+                  <td className="px-6 py-4 text-gray-400">
+                    {new Date(job.created_at).toLocaleDateString()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
       </div>
-    </main>
+    </div>
   );
 }

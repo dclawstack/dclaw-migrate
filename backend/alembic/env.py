@@ -9,6 +9,17 @@ from alembic import context
 
 from app.core.config import settings
 from app.models.base import Base
+import app.models.migration_wave  # noqa: F401
+import app.models.connection  # noqa: F401
+import app.models.migration_job  # noqa: F401
+import app.models.schema_mapping  # noqa: F401
+import app.models.execution_log  # noqa: F401
+import app.models.validation_report  # noqa: F401
+import app.models.application_asset  # noqa: F401
+import app.models.test_case  # noqa: F401
+import app.models.cutover_plan  # noqa: F401
+import app.models.optimization_rec  # noqa: F401
+import app.models.runbook  # noqa: F401
 
 # this is the Alembic Config object
 config = context.config

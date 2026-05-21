@@ -1,122 +1,239 @@
-# PRODUCT-SPEC: CRM
+# PRODUCT-SPEC: DClaw Migrate
+
+> Sources of truth: `REVISED-PRD.md` (v2.3, authoritative), `PLAN-v1.2.md` (feature roadmap), `AGENTS.md` (architecture rules).
+> When this file conflicts with `AGENTS.md`, `AGENTS.md` wins on architecture. When this file conflicts with `REVISED-PRD.md`, `REVISED-PRD.md` wins on features.
+
+---
 
 ## Overview
 
-**App Name:** CRM
-**Domain:** Customer Relationship Management
-**Target User:** Sales teams, account managers
+| Field | Value |
+|-------|-------|
+| **App Name** | DClaw Migrate |
+| **Category** | Infrastructure |
+| **Tagline** | Cloud & database migration with AI guidance |
+| **Backend Port** | `8033` (FastAPI) |
+| **Frontend Port** | `3033` (Next.js) |
+| **Database** | `dclaw_migrate` (PostgreSQL) |
+| **Base API Path** | `/api/v1` |
+| **Target Users** | DevOps engineers, DBAs, platform teams running cloud or DB migrations |
+
+---
 
 ## Core Entities
 
-### Customer
+### Connection
+Represents a source or target endpoint (database or cloud).
+
 ```
-Customer
+Connection
 ├── id: UUID (PK)
 ├── name: str (required)
-├── email: str (unique, required)
-├── phone: str (optional)
-├── company: str (optional)
-├── status: enum ["lead", "active", "churned"] (default: "lead")
-├── notes: str (optional)
+├── connection_type: enum ["postgresql", "mysql", "mongodb", "mssql", "aws_rds", "gcp_cloudsql", "azure_sql"] (required)
+├── role: enum ["source", "target"] (required)
+├── host: str (required)
+├── port: int (required)
+├── database_name: str (required)
+├── username: str (required)
+├── password_secret: str (required, stored as secret ref — never plaintext)
+├── ssl_enabled: bool (default false)
+├── status: enum ["unchecked", "ok", "error"] (default: "unchecked")
+├── last_tested_at: datetime (optional)
 ├── created_at: datetime
 └── updated_at: datetime
 ```
 
-### Deal
-```
-Deal
-├── id: UUID (PK)
-├── customer_id: UUID (FK → Customer, ondelete=CASCADE)
-├── title: str (required)
-├── value: float (required, default 0)
-├── stage: enum ["prospecting", "qualification", "proposal", "negotiation", "closed_won", "closed_lost"] (default: "prospecting")
-├── probability: int (0-100, default 0)
-├── expected_close_date: date (optional)
-├── created_at: datetime
-└── updated_at: datetime
-```
+### MigrationJob
+A migration task pairing a source and target connection.
 
-### Activity
 ```
-Activity
+MigrationJob
 ├── id: UUID (PK)
-├── deal_id: UUID (FK → Deal, ondelete=CASCADE, optional)
-├── customer_id: UUID (FK → Customer, ondelete=CASCADE)
-├── activity_type: enum ["call", "email", "meeting", "note"] (required)
-├── description: str (required)
+├── name: str (required)
+├── description: str (optional)
+├── source_connection_id: UUID (FK → Connection, ondelete=SET NULL)
+├── target_connection_id: UUID (FK → Connection, ondelete=SET NULL)
+├── migration_type: enum ["full_load", "cdc", "schema_only"] (default: "full_load")
+├── status: enum ["draft", "ready", "running", "paused", "completed", "failed"] (default: "draft")
 ├── scheduled_at: datetime (optional)
-├── completed: bool (default false)
+├── started_at: datetime (optional)
+├── completed_at: datetime (optional)
 ├── created_at: datetime
 └── updated_at: datetime
 ```
+
+### SchemaMapping
+A single table/column mapping between source and target.
+
+```
+SchemaMapping
+├── id: UUID (PK)
+├── job_id: UUID (FK → MigrationJob, ondelete=CASCADE)
+├── source_table: str (required)
+├── target_table: str (required)
+├── source_column: str (optional — null means table-level mapping)
+├── target_column: str (optional)
+├── transform_rule: str (optional — SQL expression or AI-generated transform)
+├── is_excluded: bool (default false)
+├── created_at: datetime
+└── updated_at: datetime
+```
+
+### ExecutionLog
+Append-only log entries for a job run.
+
+```
+ExecutionLog
+├── id: UUID (PK)
+├── job_id: UUID (FK → MigrationJob, ondelete=CASCADE)
+├── level: enum ["info", "warning", "error"] (required)
+├── message: str (required)
+├── rows_processed: int (optional)
+├── created_at: datetime
+```
+
+### ValidationReport
+Post-migration integrity check results.
+
+```
+ValidationReport
+├── id: UUID (PK)
+├── job_id: UUID (FK → MigrationJob, ondelete=CASCADE)
+├── table_name: str (required)
+├── source_row_count: int (required)
+├── target_row_count: int (required)
+├── checksum_match: bool (required)
+├── sample_mismatches: int (default 0)
+├── status: enum ["passed", "failed", "partial"] (required)
+├── detail: str (optional — JSON blob with sample diffs)
+├── created_at: datetime
+```
+
+---
 
 ## User Stories / Screens
 
 ### Screen 1: Dashboard
-- Summary cards: total customers, open deals, total pipeline value, win rate
-- Recent activities feed
-- Deals by stage bar chart
-- Quick action buttons (add customer, add deal, log activity)
+- Summary cards: total jobs, running jobs, completed today, failed jobs
+- Recent execution log feed (last 20 entries across all jobs)
+- Jobs by status bar chart
+- Quick actions: New Connection, New Job
 
-### Screen 2: Customers
-- Table view with pagination, search by name/email/company
-- Status filter (lead/active/churned)
-- Bulk delete
-- "Add Customer" modal/form
+### Screen 2: Connections
+- Table: name, type, role, status, last tested
+- Test connection button (pings the endpoint and updates status)
+- "Add Connection" form/modal with all fields
+- Edit / delete per row
 
-### Screen 3: Customer Detail
-- Customer info card with edit/delete
-- Related deals list
-- Related activities timeline
-- Add deal / add activity buttons
+### Screen 3: Migration Jobs
+- Table: name, type, source → target, status, scheduled/started time
+- Status badges with colour coding
+- "New Job" form (name, type, pick source + target connections)
+- Run / pause / cancel actions per row
 
-### Screen 4: Deals
-- Kanban board view by stage (prospecting → closed_won/lost)
-- Table view toggle
-- Search and filter by customer, stage, value
-- "Add Deal" form with customer dropdown
+### Screen 4: Job Detail
+- Job info card (editable)
+- **Schema Mapper tab:** table/column mappings grid; auto-discover button triggers backend introspection; editable transform rules; exclude toggle per row
+- **Execution Log tab:** paginated, filterable by level (info/warning/error); live-updates while job is running
+- **Validation tab:** table-level pass/fail grid; row count diff; checksum status
 
-### Screen 5: Deal Detail
-- Deal info with edit/delete
-- Probability slider
-- Related activities
-- Move stage buttons
+### Screen 5: Schema Discovery (modal/wizard)
+- Triggered from Job Detail → "Discover Schema"
+- Connects to source, lists tables with row counts
+- AI suggests target table/column mappings with type conversions
+- User reviews, edits, and confirms before saving SchemaMappings
 
-### Screen 6: Activities
-- Timeline view of all activities
-- Filter by type, customer, deal
-- Mark complete / incomplete
+### Screen 6: AI Migration Copilot (global panel)
+- Floating sidebar or drawer, accessible from every page
+- Chat interface: "How do I migrate MySQL → PostgreSQL with zero downtime?"
+- Context-aware: knows the active job, source/target connection types, and schema
+- Suggests next actions: run validation, fix mapping for `user_id`, schedule cutover
+- Falls back to local Ollama when cloud LLM is unavailable
+
+---
 
 ## AI Features
 
-- **Deal sentiment analysis:** Analyze customer emails/notes for positive/negative sentiment
-- **Next best action:** Recommend next activity based on deal stage and last contact
-- **Win probability prediction:** Use deal attributes to suggest probability score
+From `PLAN-v1.2.md` (P0) and `REVISED-PRD.md` §5:
+
+| Feature | Description | Backend endpoint |
+|---------|-------------|-----------------|
+| **AI Migration Copilot** | Chat that plans migrations, suggests mappings, troubleshoots failures. RAG over migration patterns. | `POST /api/v1/ai/migrate-chat` |
+| **Schema Auto-Mapping** | LLM suggests target column/type from source schema context. | `POST /api/v1/ai/suggest-mappings` |
+| **AI Data Transform** | Generate transform rules (normalization, enrichment) from examples. | `POST /api/v1/ai/suggest-transforms` |
+| **Migration Risk Assessment** | Given a job config, identify top risks and mitigation steps. | `POST /api/v1/ai/assess-risk` |
+
+AI stack: OpenRouter + Kimi K2.5 (cloud), Ollama fallback (local). See `REVISED-PRD.md` §4.
+
+---
 
 ## API Endpoints (v1.0)
 
 ```
-GET    /api/v1/customers          → List customers
-POST   /api/v1/customers          → Create customer
-GET    /api/v1/customers/{id}     → Get customer
-PUT    /api/v1/customers/{id}     → Update customer
-DELETE /api/v1/customers/{id}     → Delete customer
-GET    /api/v1/deals              → List deals
-POST   /api/v1/deals              → Create deal
-GET    /api/v1/deals/{id}         → Get deal
-PUT    /api/v1/deals/{id}         → Update deal
-DELETE /api/v1/deals/{id}         → Delete deal
-GET    /api/v1/activities         → List activities
-POST   /api/v1/activities         → Create activity
-GET    /api/v1/activities/{id}    → Get activity
-PUT    /api/v1/activities/{id}    → Update activity
-DELETE /api/v1/activities/{id}    → Delete activity
-GET    /api/v1/dashboard          → Dashboard stats
+# Connections
+GET    /api/v1/connections              → List connections
+POST   /api/v1/connections              → Create connection
+GET    /api/v1/connections/{id}         → Get connection
+PUT    /api/v1/connections/{id}         → Update connection
+DELETE /api/v1/connections/{id}         → Delete connection
+POST   /api/v1/connections/{id}/test    → Test connectivity → { "ok": bool, "latency_ms": int }
+
+# Migration Jobs
+GET    /api/v1/jobs                     → List jobs
+POST   /api/v1/jobs                     → Create job
+GET    /api/v1/jobs/{id}                → Get job
+PUT    /api/v1/jobs/{id}                → Update job
+DELETE /api/v1/jobs/{id}                → Delete job
+POST   /api/v1/jobs/{id}/run            → Start migration
+POST   /api/v1/jobs/{id}/pause          → Pause migration
+POST   /api/v1/jobs/{id}/cancel         → Cancel migration
+
+# Schema Mappings
+GET    /api/v1/jobs/{id}/mappings       → List mappings for job
+POST   /api/v1/jobs/{id}/mappings       → Create/bulk-upsert mappings
+DELETE /api/v1/jobs/{id}/mappings/{mid} → Delete mapping
+POST   /api/v1/jobs/{id}/discover       → Introspect source schema → create draft mappings
+
+# Execution Logs
+GET    /api/v1/jobs/{id}/logs           → List logs (paginated, filter by level)
+
+# Validation Reports
+GET    /api/v1/jobs/{id}/validations    → List validation reports for job
+POST   /api/v1/jobs/{id}/validate       → Trigger post-migration validation
+
+# AI
+POST   /api/v1/ai/migrate-chat          → Chat with migration copilot
+POST   /api/v1/ai/suggest-mappings      → Get AI mapping suggestions for a job
+POST   /api/v1/ai/suggest-transforms    → Get AI transform rule suggestions
+POST   /api/v1/ai/assess-risk           → Risk assessment for a job config
+
+# Health
+GET    /health                          → { "status": "ok" }
+GET    /api/v1/dashboard                → Aggregate stats for Dashboard screen
 ```
+
+---
 
 ## Non-Functional Requirements
 
-- Backend tests: 70%+ coverage
-- Frontend: Responsive, Tailwind + shadcn/ui
-- Docker: All services start with `docker compose up -d`
-- No mock data — everything persisted to PostgreSQL
+- **Tests:** 70%+ coverage; every endpoint covered; `pytest-asyncio==0.24.0` pinned
+- **No mock data:** all state persisted to PostgreSQL
+- **Docker:** `docker compose up -d` starts all services healthy; healthcheck uses `python urllib.request.urlopen()` — never `curl`
+- **Frontend build:** `npm run build` must pass; `package-lock.json` committed
+- **Styling:** Tailwind + pre-built `src/components/ui/` — do NOT install shadcn CLI or `@base-ui/react`
+- **Env vars:** `NEXT_PUBLIC_API_URL` baked at build time; Dockerfile MUST declare `ARG NEXT_PUBLIC_API_URL` before `RUN npm run build`
+- **Secrets:** passwords stored as secret references (K8s Secrets / `.env`); never persisted as plaintext in DB
+- **Alembic:** every new model gets a migration; no schema drift
+
+---
+
+## Implementation Order
+
+Follows `PLAN-v1.2.md` priority, adapted for this entity model:
+
+| Week | Task |
+|------|------|
+| 1–2 | Connections CRUD + test endpoint; MigrationJobs CRUD; Dashboard stats |
+| 3–4 | Schema Discovery (introspection engine); SchemaMapping CRUD; ExecutionLog |
+| 5–6 | AI Migration Copilot (`/ai/migrate-chat`); AI suggest-mappings |
+| 7–8 | Validation engine + ValidationReport; AI risk assessment; CDC groundwork |
