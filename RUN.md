@@ -119,6 +119,42 @@ npm run build
 | Port 3035 / 8121 already in use | Edit the port mappings in `docker-compose.yml` and update `NEXT_PUBLIC_API_URL` accordingly |
 | `pytest` can't connect to DB | Create the test database: `psql -U postgres -c "CREATE DATABASE dclaw_migrate_test;"` |
 
+## Vercel deployment (`web/`)
+
+The `web/` directory is a standalone Next.js app designed for Vercel. It uses server-side rewrites instead of `NEXT_PUBLIC_API_URL`, so the backend URL is never exposed to the browser.
+
+### Deploy to Vercel
+
+```bash
+cd web
+npm install
+npx vercel --prod --yes
+```
+
+Set `BACKEND_URL` in [Vercel Project Settings → Environment Variables](https://vercel.com/dashboard) to point at your deployed FastAPI backend.
+
+### Local development against Docker backend
+
+```bash
+cd web
+cp .env.example .env.local   # edit BACKEND_URL if needed
+npm install
+npm run dev                   # http://localhost:3033
+```
+
+### How the rewrite proxy works
+
+`web/next.config.js` rewrites all `/api/*` requests server-side to `BACKEND_URL/api/*`. The browser only makes same-origin requests — no CORS configuration needed on the backend.
+
+| File | Purpose |
+|------|---------|
+| `web/next.config.js` | Rewrite proxy to backend |
+| `web/.env.example` | `BACKEND_URL` template |
+| `web/src/lib/api.ts` | API client using `""` as base (calls `/api/v1/*`, rewritten by Next.js) |
+| `web/src/app/**` | All pages (identical to `frontend/`) |
+
+---
+
 ## Stopping everything
 
 ```bash
