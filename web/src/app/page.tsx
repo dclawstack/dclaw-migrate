@@ -51,6 +51,16 @@ export default function LandingPage() {
           </div>
 
           <div className="flex items-center gap-3">
+            <a
+              href="https://github.com/dclawstack/dclaw-migrate"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden sm:inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+              aria-label="View on GitHub"
+            >
+              <Github className="w-4.5 h-4.5" />
+              <span className="hidden md:inline">GitHub</span>
+            </a>
             <Link
               href="/dashboard"
               className="hidden sm:inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
