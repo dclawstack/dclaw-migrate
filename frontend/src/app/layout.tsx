@@ -34,6 +34,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Link href="/assets" className="text-sm text-gray-600 hover:text-amber-500 transition-colors">
             Assets
           </Link>
+          <Link href="/cutover" className="text-sm text-gray-600 hover:text-amber-500 transition-colors">
+            Cutover
+          </Link>
+          <Link href="/testing" className="text-sm text-gray-600 hover:text-amber-500 transition-colors">
+            Testing
+          </Link>
+          <Link href="/optimization" className="text-sm text-gray-600 hover:text-amber-500 transition-colors">
+            Optimize
+          </Link>
+          <Link href="/runbooks" className="text-sm text-gray-600 hover:text-amber-500 transition-colors">
+            Runbooks
+          </Link>
         </nav>
         <main>{children}</main>
         <CopilotPanel />

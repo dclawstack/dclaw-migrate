@@ -1,10 +1,11 @@
-"""AI Copilot service — calls OpenRouter using httpx (no openai SDK needed)."""
+"""AI Copilot service — OpenRouter primary, Ollama local fallback."""
 import httpx
 
 from app.core.config import settings
 
-_BASE_URL = "https://openrouter.ai/api/v1/chat/completions"
+_OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 _DEFAULT_MODEL = "moonshotai/kimi-k2"
+_OLLAMA_MODEL = "llama3"
 _TIMEOUT = 60.0
 
 _SYSTEM_PROMPT = """You are DClaw Migrate Copilot, an expert data and cloud migration assistant.
@@ -21,33 +22,46 @@ Be concise, practical, and specific. When you identify a risk, always give a con
 If asked about a specific migration job, use the context provided."""
 
 
-async def chat(
-    messages: list[dict],
-    model: str = _DEFAULT_MODEL,
-) -> str:
-    if not settings.openrouter_api_key:
-        return (
-            "⚠️ OPENROUTER_API_KEY is not configured. "
-            "Add it to your .env file to enable the AI Copilot."
-        )
-
+async def _chat_openrouter(messages: list[dict], model: str) -> str:
     async with httpx.AsyncClient(timeout=_TIMEOUT) as client:
         resp = await client.post(
-            _BASE_URL,
+            _OPENROUTER_URL,
             headers={
                 "Authorization": f"Bearer {settings.openrouter_api_key}",
                 "HTTP-Referer": "https://dclaw.io",
                 "X-Title": "DClaw Migrate",
             },
-            json={
-                "model": model,
-                "messages": messages,
-                "max_tokens": 2048,
-                "temperature": 0.3,
-            },
+            json={"model": model, "messages": messages, "max_tokens": 2048, "temperature": 0.3},
         )
         resp.raise_for_status()
         return resp.json()["choices"][0]["message"]["content"]
+
+
+async def _chat_ollama(messages: list[dict]) -> str:
+    url = f"{settings.ollama_base_url.rstrip('/')}/api/chat"
+    async with httpx.AsyncClient(timeout=_TIMEOUT) as client:
+        resp = await client.post(
+            url,
+            json={"model": settings.ollama_model, "messages": messages, "stream": False},
+        )
+        resp.raise_for_status()
+        return resp.json()["message"]["content"]
+
+
+async def chat(
+    messages: list[dict],
+    model: str = _DEFAULT_MODEL,
+) -> str:
+    if settings.openrouter_api_key:
+        return await _chat_openrouter(messages, model)
+
+    if settings.ollama_base_url:
+        return await _chat_ollama(messages)
+
+    return (
+        "⚠️ No AI provider configured. "
+        "Set OPENROUTER_API_KEY for cloud inference or OLLAMA_BASE_URL for local Ollama."
+    )
 
 
 def build_system_message(job_context: dict | None = None) -> dict:

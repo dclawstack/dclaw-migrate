@@ -11,7 +11,15 @@ class Settings(BaseSettings):
 
     secret_key: str = "change-me-in-production"
     access_token_expire_minutes: int = 60
+
+    # AI providers — OpenRouter primary, Ollama fallback
     openrouter_api_key: str = ""
+    ollama_base_url: str = ""
+    ollama_model: str = "llama3"
+
+    # Logto auth — JWT validation (disabled when issuer is empty)
+    logto_issuer: str = ""
+    logto_audience: str = "dclaw-migrate"
 
     class Config:
         env_file = ".env"
