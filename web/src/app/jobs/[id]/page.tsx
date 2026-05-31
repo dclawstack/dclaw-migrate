@@ -90,7 +90,7 @@ export default function JobDetailPage() {
   return (
     <div className="p-8 max-w-6xl mx-auto">
       <div className="mb-4">
-        <Link href="/jobs" className="text-sm text-amber-500 hover:underline">← Back to Jobs</Link>
+        <Link href="/jobs" className="text-sm text-primary hover:underline">← Back to Jobs</Link>
       </div>
 
       {error && (
@@ -115,7 +115,7 @@ export default function JobDetailPage() {
         <Card><CardHeader className="pb-1"><CardTitle className="text-xs text-gray-500">Target</CardTitle></CardHeader>
           <CardContent><p className="font-semibold text-sm">{job.target_connection?.name ?? "—"}</p></CardContent></Card>
         <Card><CardHeader className="pb-1"><CardTitle className="text-xs text-gray-500">Tables</CardTitle></CardHeader>
-          <CardContent><p className="font-semibold text-amber-500">{mappings.length}</p></CardContent></Card>
+          <CardContent><p className="font-semibold text-primary">{mappings.length}</p></CardContent></Card>
       </div>
 
       <Tabs defaultValue="mappings">
@@ -152,7 +152,7 @@ export default function JobDetailPage() {
                     <TableCell className="text-gray-400 text-xs">{m.transform_rule ?? "—"}</TableCell>
                     <TableCell>
                       <button onClick={() => act(async () => { await jobDetailApi.updateMapping(id, m.id, { is_excluded: !m.is_excluded }); }, () => {})}
-                        className={`text-xs px-2 py-1 rounded ${m.is_excluded ? "bg-gray-100 text-gray-500" : "bg-amber-50 text-amber-600"}`}>
+                        className={`text-xs px-2 py-1 rounded ${m.is_excluded ? "bg-gray-100 text-gray-500" : "bg-accent text-primary"}`}>
                         {m.is_excluded ? "Excluded" : "Include"}
                       </button>
                     </TableCell>

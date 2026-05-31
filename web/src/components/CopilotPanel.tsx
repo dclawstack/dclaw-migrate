@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useParams, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { api } from "@/lib/api";
 
 interface Message {
@@ -72,7 +72,7 @@ export default function CopilotPanel() {
       {/* Floating trigger */}
       <button
         onClick={() => setOpen((v) => !v)}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-amber-500 text-white shadow-lg hover:bg-amber-600 transition-colors flex items-center justify-center text-2xl"
+        className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-2xl text-primary-foreground shadow-lg transition-all hover:opacity-90"
         aria-label="Open AI Copilot"
       >
         {open ? "✕" : "✦"}
@@ -80,27 +80,27 @@ export default function CopilotPanel() {
 
       {/* Panel */}
       {open && (
-        <div className="fixed bottom-24 right-6 z-50 w-96 h-[520px] bg-white rounded-2xl shadow-2xl border flex flex-col overflow-hidden">
+        <div className="fixed bottom-24 right-6 z-50 flex h-[520px] w-96 flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-2xl">
           {/* Header */}
-          <div className="bg-amber-500 px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center justify-between bg-primary px-4 py-3">
             <div>
-              <p className="text-white font-semibold text-sm">DClaw Migrate Copilot</p>
+              <p className="text-sm font-semibold text-primary-foreground">DClaw Migrate Copilot</p>
               {jobId && (
-                <p className="text-amber-100 text-xs">Context: current job</p>
+                <p className="text-xs text-primary-foreground/70">Context: current job</p>
               )}
             </div>
-            <button onClick={() => setMessages([])} className="text-amber-100 text-xs hover:text-white">
+            <button onClick={() => setMessages([])} className="text-xs text-primary-foreground/70 hover:text-primary-foreground">
               Clear
             </button>
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 bg-gray-50">
+          <div className="flex-1 space-y-3 overflow-y-auto bg-secondary px-4 py-3">
             {messages.length === 0 && (
-              <div className="text-center text-gray-400 text-sm mt-8">
-                <p className="text-2xl mb-2">✦</p>
+              <div className="mt-8 text-center text-sm text-muted-foreground">
+                <p className="mb-2 text-2xl text-primary">✦</p>
                 <p>Ask me anything about your migration.</p>
-                <p className="text-xs mt-1">e.g. "What are the risks of this migration?"</p>
+                <p className="mt-1 text-xs">e.g. &quot;What are the risks of this migration?&quot;</p>
               </div>
             )}
             {messages.map((msg, i) => (
@@ -109,10 +109,10 @@ export default function CopilotPanel() {
                 className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm whitespace-pre-wrap ${
+                  className={`max-w-[80%] whitespace-pre-wrap rounded-2xl px-3 py-2 text-sm ${
                     msg.role === "user"
-                      ? "bg-amber-500 text-white rounded-br-sm"
-                      : "bg-white border text-gray-700 rounded-bl-sm shadow-sm"
+                      ? "rounded-br-sm bg-primary text-primary-foreground"
+                      : "rounded-bl-sm border border-border bg-white text-foreground shadow-sm"
                   }`}
                 >
                   {msg.content}
@@ -121,7 +121,7 @@ export default function CopilotPanel() {
             ))}
             {loading && (
               <div className="flex justify-start">
-                <div className="bg-white border rounded-2xl rounded-bl-sm px-3 py-2 text-sm text-gray-400 shadow-sm">
+                <div className="rounded-2xl rounded-bl-sm border border-border bg-white px-3 py-2 text-sm text-muted-foreground shadow-sm">
                   Thinking…
                 </div>
               </div>
@@ -130,19 +130,19 @@ export default function CopilotPanel() {
           </div>
 
           {/* Input */}
-          <div className="border-t px-3 py-2 flex gap-2 bg-white">
+          <div className="flex gap-2 border-t border-border bg-white px-3 py-2">
             <textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKey}
               placeholder="Ask about your migration…"
               rows={2}
-              className="flex-1 resize-none rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+              className="flex-1 resize-none rounded-lg border border-input px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
             />
             <button
               onClick={sendMessage}
               disabled={loading || !input.trim()}
-              className="self-end px-3 py-2 bg-amber-500 text-white rounded-lg text-sm font-medium hover:bg-amber-600 disabled:opacity-40 transition-colors"
+              className="self-end rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-all hover:opacity-90 disabled:opacity-40"
             >
               Send
             </button>

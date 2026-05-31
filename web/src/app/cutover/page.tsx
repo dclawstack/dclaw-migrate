@@ -130,7 +130,7 @@ export default function CutoverPage() {
               {plan.rollback_procedure && (
                 <div>
                   <p className="text-xs font-semibold text-gray-500 uppercase mb-1">Rollback Procedure</p>
-                  <pre className="text-sm bg-amber-50 rounded p-3 whitespace-pre-wrap">{plan.rollback_procedure}</pre>
+                  <pre className="text-sm bg-accent rounded p-3 whitespace-pre-wrap">{plan.rollback_procedure}</pre>
                 </div>
               )}
               <div className="flex gap-2 pt-2 flex-wrap">
@@ -162,11 +162,11 @@ export default function CutoverPage() {
           </Card>
 
           {aiSuggestion && (
-            <Card className="border-amber-200 bg-amber-50">
+            <Card className="border-primary/30 bg-accent">
               <CardHeader className="pb-2">
                 <div className="flex justify-between">
-                  <CardTitle className="text-amber-700 text-base">AI Cutover Analysis</CardTitle>
-                  <button className="text-xs text-amber-500 hover:underline" onClick={() => setAiSuggestion(null)}>dismiss</button>
+                  <CardTitle className="text-primary text-base">AI Cutover Analysis</CardTitle>
+                  <button className="text-xs text-primary hover:underline" onClick={() => setAiSuggestion(null)}>dismiss</button>
                 </div>
               </CardHeader>
               <CardContent>

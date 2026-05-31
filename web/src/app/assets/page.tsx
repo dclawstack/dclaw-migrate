@@ -84,10 +84,10 @@ export default function AssetsPage() {
       )}
 
       {aiResult && (
-        <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 p-4">
+        <div className="mb-6 rounded-lg border border-primary/30 bg-accent p-4">
           <div className="flex justify-between mb-2">
-            <p className="font-semibold text-amber-700">AI Assessment</p>
-            <button className="text-xs text-amber-500" onClick={() => setAiResult(null)}>dismiss</button>
+            <p className="font-semibold text-primary">AI Assessment</p>
+            <button className="text-xs text-primary" onClick={() => setAiResult(null)}>dismiss</button>
           </div>
           <pre className="text-sm text-gray-700 whitespace-pre-wrap">{aiResult.reply}</pre>
         </div>
@@ -115,7 +115,7 @@ export default function AssetsPage() {
               assets.map((a) => (
                 <TableRow key={a.id}>
                   <TableCell className="font-medium">
-                    <Link href={`/assets/${a.id}`} className="hover:text-amber-500 hover:underline">{a.name}</Link>
+                    <Link href={`/assets/${a.id}`} className="hover:text-primary hover:underline">{a.name}</Link>
                   </TableCell>
                   <TableCell className="text-gray-500">{a.asset_type}</TableCell>
                   <TableCell className="text-gray-500 text-xs">{a.migration_strategy}</TableCell>

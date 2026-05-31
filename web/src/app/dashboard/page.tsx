@@ -22,7 +22,7 @@ function StatCard({ label, value, sub }: { label: string; value: number; sub?: s
         <CardTitle className="text-sm font-medium text-gray-500">{label}</CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="text-3xl font-bold text-amber-500">{value}</p>
+        <p className="text-3xl font-bold text-primary">{value}</p>
         {sub && <p className="text-xs text-gray-400 mt-1">{sub}</p>}
       </CardContent>
     </Card>
@@ -65,14 +65,14 @@ export default function DashboardPage() {
       <div className="bg-white rounded-lg border shadow-sm">
         <div className="px-6 py-4 border-b flex items-center justify-between">
           <h2 className="font-semibold text-gray-700">Recent Jobs</h2>
-          <Link href="/jobs" className="text-sm text-amber-500 hover:underline">
+          <Link href="/jobs" className="text-sm text-primary hover:underline">
             View all
           </Link>
         </div>
         {!stats || stats.recent_jobs.length === 0 ? (
           <div className="px-6 py-8 text-center text-gray-400 text-sm">
             No jobs yet.{" "}
-            <Link href="/jobs" className="text-amber-500 hover:underline">
+            <Link href="/jobs" className="text-primary hover:underline">
               Create your first job →
             </Link>
           </div>
