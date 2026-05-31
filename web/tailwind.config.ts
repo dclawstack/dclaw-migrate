@@ -9,6 +9,11 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans:    ["'Open Sans'", "ui-sans-serif", "system-ui", "sans-serif"],
+        heading: ["'Raleway'", "ui-sans-serif", "system-ui", "sans-serif"],
+        mono:    ["'JetBrains Mono'", "ui-monospace", "monospace"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -22,6 +27,9 @@ const config: Config = {
         accent: { DEFAULT: "hsl(var(--accent))", foreground: "hsl(var(--accent-foreground))" },
         popover: { DEFAULT: "hsl(var(--popover))", foreground: "hsl(var(--popover-foreground))" },
         card: { DEFAULT: "hsl(var(--card))", foreground: "hsl(var(--card-foreground))" },
+        success: { DEFAULT: "hsl(var(--success))", foreground: "hsl(var(--success-foreground))", subtle: "hsl(var(--success-subtle))" },
+        warning: { DEFAULT: "hsl(var(--warning))", foreground: "hsl(var(--warning-foreground))", subtle: "hsl(var(--warning-subtle))" },
+        info: { DEFAULT: "hsl(var(--info))", foreground: "hsl(var(--info-foreground))", subtle: "hsl(var(--info-subtle))" },
       },
       borderRadius: {
         lg: "var(--radius)",

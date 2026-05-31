@@ -133,7 +133,7 @@ export default function JobsPage() {
               jobs.map((job) => (
                 <TableRow key={job.id}>
                   <TableCell className="font-medium">
-                    <Link href={`/jobs/${job.id}`} className="hover:text-amber-500 hover:underline">
+                    <Link href={`/jobs/${job.id}`} className="hover:text-primary hover:underline">
                       {job.name}
                     </Link>
                   </TableCell>

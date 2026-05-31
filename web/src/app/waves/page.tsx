@@ -82,10 +82,10 @@ export default function WavesPage() {
       )}
 
       {aiPlan && (
-        <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 p-4">
+        <div className="mb-6 rounded-lg border border-primary/30 bg-accent p-4">
           <div className="flex justify-between mb-2">
-            <p className="font-semibold text-amber-700">AI Wave Plan Suggestion</p>
-            <button className="text-xs text-amber-500 hover:underline" onClick={() => setAiPlan(null)}>dismiss</button>
+            <p className="font-semibold text-primary">AI Wave Plan Suggestion</p>
+            <button className="text-xs text-primary hover:underline" onClick={() => setAiPlan(null)}>dismiss</button>
           </div>
           <pre className="text-sm text-gray-700 whitespace-pre-wrap">{aiPlan}</pre>
         </div>
@@ -100,7 +100,7 @@ export default function WavesPage() {
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <span className="text-2xl font-bold text-amber-500">#{wave.sequence_order}</span>
+                    <span className="text-2xl font-bold text-primary">#{wave.sequence_order}</span>
                     <CardTitle>{wave.name}</CardTitle>
                   </div>
                   <div className="flex gap-2">
@@ -133,7 +133,7 @@ export default function WavesPage() {
           <p className="font-semibold text-gray-600 mb-2">Unassigned Jobs ({unassigned.length})</p>
           <div className="flex flex-wrap gap-2">
             {unassigned.map((j) => (
-              <span key={j.id} className="text-xs bg-amber-50 text-amber-700 border border-amber-200 px-2 py-1 rounded">
+              <span key={j.id} className="text-xs bg-accent text-primary border border-primary/30 px-2 py-1 rounded">
                 {j.name}
               </span>
             ))}
