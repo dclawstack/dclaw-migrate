@@ -1,0 +1,108 @@
+
+  {
+  "generationId": "gen_mpts6gop",
+  "cluster": "mixed-top-severity",
+  "provider": {
+    "primary": "anthropic/claude-sonnet-4.6",
+    "fallback": "moonshotai/kimi-k2.6",
+    "base": "https://openrouter.ai/api/v1",
+    "local": false,
+    "byok": false
+  },
+  "generatedAt": "2026-05-31T12:53:38.425Z",
+  "durationMs": 33755,
+  "generationMs": 29677,
+  "runMs": 4078,
+  "requested": 3,
+  "processed": 3,
+  "results": [
+    {
+      "finding": {
+        "rule": "No observability stack detected",
+        "title": "No observability stack detected"
+      },
+      "file": {
+        "filename": "no-observability-stack-detected-src-l0.test.ts",
+        "content": "import { describe, it, expect } from \"vitest\";\n\n// Simulates a minimal package.json dependency map as it would be parsed at runtime\ntype DependencyMap = Record<string, string>;\n\ninterface PackageJson {\n  dependencies?: DependencyMap;\n  devDependencies?: DependencyMap;\n}\n\nconst APM_PACKAGES = [\n  \"@opentelemetry/api\",\n  \"@opentelemetry/sdk-node\",\n  \"dd-trace\",\n  \"newrelic\",\n  \"@honeycombio/opentelemetry-node\",\n];\n\nconst ERROR_TRACKING_PACKAGES = [\n  \"@sentry/node\",\n  \"@sentry/browser\",\n  \"@sentry/nextjs\",\n  \"rollbar\",\n  \"bugsnag\",\n  \"@bugsnag/js\",\n];\n\nfunction detectObservabilityStack(pkg: PackageJson): {\n  hasAPM: boolean;\n  hasErrorTracking: boolean;\n  missingObservability: boolean;\n} {\n  const allDeps = {\n    ...pkg.dependencies,\n    ...pkg.devDependencies,\n  };\n\n  const installedPackages = Object.keys(allDeps);\n\n  const hasAPM = APM_PACKAGES.some((p) => installedPackages.includes(p));\n  const hasErrorTracking = ERROR_TRACKING_PACKAGES.some((p) =>\n    installedPackages.includes(p)\n  );\n\n  return {\n    hasAPM,\n    hasErrorTracking,\n    missingObservability: !hasAPM || !hasErrorTracking,\n  };\n}\n\nfunction simulateUnobservedError(\n  pkg: PackageJson\n): { caught: boolean; traceable: boolean; message: string } {\n  const { hasAPM, hasErrorTracking } = detectObservabilityStack(pkg);\n\n  // Simulate an error occurring in production\n  const error = new Error(\"Database connection timeout after 30s\");\n\n  if (!hasErrorTracking) {\n    // Error silently swallowed — no Sentry/Rollbar/Bugsnag to capture it\n    return {\n      caught: false,\n      traceable: false,\n      message: `Error lost: \"${error.message}\" — no error tracking configured`,\n    };\n  }\n\n  if (!hasAPM) {\n    return {\n      caught: true,\n      traceable: false,\n      message: `Error captured but no distributed trace available for \"${error.message}\"`,\n    };\n  }\n\n  return {\n    caught: true,\n    traceable: true,\n    message: `Error captured and traceable: \"${error.message}\"`,\n  };\n}\n\ndescribe(\"Observability stack detection\", () => {\n  it(\"demonstrates the foot-gun: a project with no observability deps loses errors silently\", () => {\n    const barePackageJson: PackageJson = {\n      dependencies: {\n        express: \"^4.18.2\",\n        pg: \"^8.11.0\",\n        lodash: \"^4.17.21\",\n      },\n      devDependencies: {\n        typescript: \"^5.0.0\",\n        vitest: \"^1.0.0\",\n      },\n    };\n\n    const result = detectObservabilityStack(barePackageJson);\n\n    // No APM and no error tracking — the worst case\n    expect(result.hasAPM).toBe(false);\n    expect(result.hasErrorTracking).toBe(false);\n    expect(result.missingObservability).toBe(true);\n\n    const errorOutcome = simulateUnobservedError(barePackageJson);\n    expect(errorOutcome.caught).toBe(false);\n    expect(errorOutcome.traceable).toBe(false);\n    expect(errorOutcome.message).toContain(\"no error tracking configured\");\n  });\n\n  it(\"demonstrates partial observability: error tracking without APM loses distributed traces\", () => {\n    const partialPackageJson: PackageJson = {\n      dependencies: {\n        express: \"^4.18.2\",\n        \"@sentry/node\": \"^7.80.0\", // error tracking present\n        // no APM\n      },\n    };\n\n    const result = detectObservabilityStack(partialPackageJson);\n\n    expect(result.hasAPM).toBe(false);\n    expect(result.hasErrorTracking).toBe(true);\n    // Still flagged as missing full observability\n    expect(result.missingObservability).toBe(true);\n\n    const errorOutcome = simulateUnobservedError(partialPackageJson);\n    expect(errorOutcome.caught).toBe(true);\n    expect(errorOutcome.traceable).toBe(false);\n    expect(errorOutcome.message).toContain(\"no distributed trace available\");\n  });\n\n  it(\"asserts the safe fix: project with Sentry + OpenTelemetry has full observability\", () => {\n    const instrumentedPackageJson: PackageJson = {\n      dependencies: {\n        express: \"^4.18.2\",\n        pg: \"^8.11.0\",\n        \"@sentry/node\": \"^7.80.0\",\n        \"@opentelemetry/api\": \"^1.7.0\",\n        \"@opentelemetry/sdk-node\": \"^0.45.0\",\n      },\n      devDependencies: {\n        typescript: \"^5.0.0\",\n        vitest: \"^1.0.0\",\n      },\n    };\n\n    const result = detectObservabilityStack(instrumentedPackageJson);\n\n    expect(result.hasAPM).toBe(true);\n    expect(result.hasErrorTracking).toBe(true);\n    expect(result.missingObservability).toBe(false);\n\n    const errorOutcome = simulateUnobservedError(instrumentedPackageJson);\n    expect(errorOutcome.caught).toBe(true);\n    expect(errorOutcome.traceable).toBe(true);\n    expect(errorOutcome.message).toContain(\"captured and traceable\");\n  });\n\n  it(\"asserts the safe fix: Datadog APM + Sentry also satisfies full observability\", () => {\n    const datadogPackageJson: PackageJson = {\n      dependencies: {\n        \"dd-trace\": \"^4.20.0\",\n        \"@sentry/node\": \"^7.80.0\",\n        fastify: \"^4.24.0\",\n      },\n    };\n\n    const result = detectObservabilityStack(datadogPackageJson);\n\n    expect(result.hasAPM).toBe(true);\n    expect(result.hasErrorTracking).toBe(true);\n    expect(result.missingObservability).toBe(false);\n\n    const errorOutcome = simulateUnobservedError(datadogPackageJson);\n    expect(errorOutcome.caught).toBe(true);\n    expect(errorOutcome.traceable).toBe(true);\n  });\n});\n",
+        "reasoning": "Tests exercise a synthetic package.json dependency scanner that detects the absence of APM and error-tracking packages, demonstrating how missing observability silently loses errors versus the safe fix of adding Sentry and OpenTelemetry.",
+        "language": "js"
+      },
+      "attempts": [
+        {
+          "model": "anthropic/claude-sonnet-4.6",
+          "ok": true,
+          "durationMs": 25873
+        }
+      ]
+    },
+    {
+      "finding": {
+        "rule": "No product analytics dependency",
+        "title": "No product analytics dependency"
+      },
+      "file": {
+        "filename": "no-product-analytics-dependency-src-l0.test.ts",
+        "content": "import { describe, it, expect } from \"vitest\";\n\n// Synthetic simulation of a minimal analytics abstraction.\n// We recreate the foot-gun (no telemetry = silent feature adoption)\n// and the safe fix (a lightweight event-tracking shim with key lifecycle events).\n\n// --- Foot-gun: no analytics layer ---\nfunction createAppWithoutAnalytics() {\n  const events: string[] = [];\n\n  function onSignup(_userId: string) {\n    // user signs up but nothing is tracked\n  }\n\n  function onActivation(_userId: string) {\n    // user activates a feature but nothing is tracked\n  }\n\n  function onFirstValueMoment(_userId: string) {\n    // user reaches first value moment but nothing is tracked\n  }\n\n  return { onSignup, onActivation, onFirstValueMoment, events };\n}\n\n// --- Safe fix: lightweight analytics shim tracking key lifecycle events ---\ntype AnalyticsEvent = {\n  event: string;\n  userId: string;\n  properties?: Record<string, unknown>;\n};\n\nfunction createAnalyticsClient() {\n  const captured: AnalyticsEvent[] = [];\n\n  function capture(event: string, userId: string, properties?: Record<string, unknown>) {\n    captured.push({ event, userId, properties });\n  }\n\n  return { capture, captured };\n}\n\nfunction createAppWithAnalytics(analytics: ReturnType<typeof createAnalyticsClient>) {\n  function onSignup(userId: string) {\n    analytics.capture(\"signup\", userId);\n  }\n\n  function onActivation(userId: string) {\n    analytics.capture(\"activation\", userId, { feature: \"core\" });\n  }\n\n  function onFirstValueMoment(userId: string) {\n    analytics.capture(\"first_value_moment\", userId);\n  }\n\n  function onRetention(userId: string) {\n    analytics.capture(\"retention\", userId);\n  }\n\n  function onChurnSignal(userId: string, reason: string) {\n    analytics.capture(\"churn_signal\", userId, { reason });\n  }\n\n  return { onSignup, onActivation, onFirstValueMoment, onRetention, onChurnSignal };\n}\n\ndescribe(\"Product analytics telemetry\", () => {\n  it(\"demonstrates the foot-gun: no events are captured without an analytics layer\", () => {\n    const app = createAppWithoutAnalytics();\n\n    app.onSignup(\"user-001\");\n    app.onActivation(\"user-001\");\n    app.onFirstValueMoment(\"user-001\");\n\n    // Without telemetry, we have zero visibility into user journeys.\n    expect(app.events).toHaveLength(0);\n    // There is no way to know how many users signed up, activated, or reached value.\n    expect(app.events.find((e) => e === \"signup\")).toBeUndefined();\n  });\n\n  it(\"safe fix: key lifecycle events are captured and inspectable\", () => {\n    const analytics = createAnalyticsClient();\n    const app = createAppWithAnalytics(analytics);\n\n    app.onSignup(\"user-001\");\n    app.onActivation(\"user-001\");\n    app.onFirstValueMoment(\"user-001\");\n    app.onRetention(\"user-001\");\n    app.onChurnSignal(\"user-001\", \"price\");\n\n    expect(analytics.captured).toHaveLength(5);\n\n    const eventNames = analytics.captured.map((e) => e.event);\n    expect(eventNames).toContain(\"signup\");\n    expect(eventNames).toContain(\"activation\");\n    expect(eventNames).toContain(\"first_value_moment\");\n    expect(eventNames).toContain(\"retention\");\n    expect(eventNames).toContain(\"churn_signal\");\n\n    const churn = analytics.captured.find((e) => e.event === \"churn_signal\");\n    expect(churn?.properties?.reason).toBe(\"price\");\n\n    const activation = analytics.captured.find((e) => e.event === \"activation\");\n    expect(activation?.properties?.feature).toBe(\"core\");\n\n    // Every event is tied to a userId for journey analysis.\n    analytics.captured.forEach((e) => {\n      expect(e.userId).toBe(\"user-001\");\n    });\n  });\n\n  it(\"safe fix: multiple users produce independent event streams\", () => {\n    const analytics = createAnalyticsClient();\n    const app = createAppWithAnalytics(analytics);\n\n    app.onSignup(\"user-001\");\n    app.onSignup(\"user-002\");\n    app.onActivation(\"user-001\");\n    // user-002 never activates — a churn signal\n    app.onChurnSignal(\"user-002\", \"no_activation\");\n\n    const user1Events = analytics.captured.filter((e) => e.userId === \"user-001\");\n    const user2Events = analytics.captured.filter((e) => e.userId === \"user-002\");\n\n    expect(user1Events.map((e) => e.event)).toEqual([\"signup\", \"activation\"]);\n    expect(user2Events.map((e) => e.event)).toEqual([\"signup\", \"churn_signal\"]);\n\n    // Activation rate: 1 out of 2 users activated\n    const activatedUsers = new Set(\n      analytics.captured.filter((e) => e.event === \"activation\").map((e) => e.userId)\n    );\n    expect(activatedUsers.size).toBe(1);\n  });\n});\n",
+        "reasoning": "Tests simulate the absence of any telemetry layer (foot-gun) versus a minimal analytics shim that captures the five key lifecycle events recommended by the finding, verifying events are recorded, attributed to users, and carry the correct properties.",
+        "language": "js"
+      },
+      "attempts": [
+        {
+          "model": "anthropic/claude-sonnet-4.6",
+          "ok": true,
+          "durationMs": 23010
+        }
+      ]
+    },
+    {
+      "finding": {
+        "rule": "Auth Endpoints Not Rate Limited",
+        "title": "Auth Endpoints Not Rate Limited"
+      },
+      "file": {
+        "filename": "auth-endpoints-not-rate-limited-src-l0.test.ts",
+        "content": "import { describe, it, expect } from \"vitest\";\n\n// Synthetic rate limiter implementations to demonstrate the foot-gun and the fix\n\ninterface AuthAttempt {\n  ip: string;\n  timestamp: number;\n}\n\n// FOOT-GUN: Auth handler with NO rate limiting\nfunction createUnprotectedAuthHandler() {\n  const successfulLogins: string[] = [];\n\n  function login(ip: string, password: string): { success: boolean; token?: string } {\n    // No rate limiting — every attempt is processed\n    if (password === \"correct-password\") {\n      successfulLogins.push(ip);\n      return { success: true, token: \"jwt-token-abc123\" };\n    }\n    return { success: false };\n  }\n\n  return { login, successfulLogins };\n}\n\n// SAFE FIX: Auth handler WITH rate limiting (5 attempts/min per IP) and account locking (10 failures)\nfunction createRateLimitedAuthHandler(options: { maxAttemptsPerMinute: number; lockAfterFailures: number }) {\n  const attemptLog = new Map<string, AuthAttempt[]>();\n  const lockedAccounts = new Set<string>();\n  const failureCount = new Map<string, number>();\n\n  function isRateLimited(ip: string, now: number): boolean {\n    const windowMs = 60_000;\n    const attempts = attemptLog.get(ip) ?? [];\n    const recentAttempts = attempts.filter((a) => now - a.timestamp < windowMs);\n    attemptLog.set(ip, recentAttempts);\n    return recentAttempts.length >= options.maxAttemptsPerMinute;\n  }\n\n  function recordAttempt(ip: string, now: number): void {\n    const attempts = attemptLog.get(ip) ?? [];\n    attempts.push({ ip, timestamp: now });\n    attemptLog.set(ip, attempts);\n  }\n\n  function login(\n    ip: string,\n    username: string,\n    password: string,\n    now: number = Date.now()\n  ): { success: boolean; token?: string; error?: string } {\n    if (lockedAccounts.has(username)) {\n      return { success: false, error: \"account_locked\" };\n    }\n\n    if (isRateLimited(ip, now)) {\n      return { success: false, error: \"rate_limited\" };\n    }\n\n    recordAttempt(ip, now);\n\n    if (password === \"correct-password\") {\n      failureCount.set(username, 0);\n      return { success: true, token: \"jwt-token-abc123\" };\n    }\n\n    const failures = (failureCount.get(username) ?? 0) + 1;\n    failureCount.set(username, failures);\n\n    if (failures >= options.lockAfterFailures) {\n      lockedAccounts.add(username);\n      return { success: false, error: \"account_locked\" };\n    }\n\n    return { success: false, error: \"invalid_credentials\" };\n  }\n\n  return { login, lockedAccounts, failureCount };\n}\n\ndescribe(\"Auth Endpoints Not Rate Limited\", () => {\n  it(\"demonstrates the foot-gun: unprotected handler allows unlimited brute-force attempts\", () => {\n    const handler = createUnprotectedAuthHandler();\n    const attackerIp = \"192.168.1.100\";\n    const passwords = Array.from({ length: 100 }, (_, i) => `guess-${i}`);\n    passwords.push(\"correct-password\");\n\n    let successResult: { success: boolean; token?: string } | null = null;\n    let totalAttempts = 0;\n\n    for (const pwd of passwords) {\n      totalAttempts++;\n      const result = handler.login(attackerIp, pwd);\n      if (result.success) {\n        successResult = result;\n        break;\n      }\n    }\n\n    // Without rate limiting, all 101 attempts go through unimpeded\n    expect(totalAttempts).toBe(101);\n    expect(successResult).not.toBeNull();\n    expect(successResult?.success).toBe(true);\n    expect(successResult?.token).toBe(\"jwt-token-abc123\");\n    // No protection was applied — attacker succeeded after exhaustive guessing\n  });\n\n  it(\"safe fix: rate limiter blocks more than 5 attempts per minute from the same IP\", () => {\n    const handler = createRateLimitedAuthHandler({ maxAttemptsPerMinute: 5, lockAfterFailures: 10 });\n    const attackerIp = \"192.168.1.100\";\n    const baseTime = 1_000_000;\n\n    const results = Array.from({ length: 8 }, (_, i) =>\n      handler.login(attackerIp, \"victim\", `guess-${i}`, baseTime + i * 100)\n    );\n\n    // First 5 attempts should be processed (wrong password)\n    for (let i = 0; i < 5; i++) {\n      expect(results[i].error).toBe(\"invalid_credentials\");\n    }\n\n    // Attempts 6-8 should be rate limited\n    for (let i = 5; i < 8; i++) {\n      expect(results[i].error).toBe(\"rate_limited\");\n      expect(results[i].success).toBe(false);\n    }\n  });\n\n  it(\"safe fix: account locking triggers after 10 consecutive failures\", () => {\n    const handler = createRateLimitedAuthHandler({ maxAttemptsPerMinute: 100, lockAfterFailures: 10 });\n    const ip = \"10.0.0.1\";\n    const username = \"target-user\";\n    const baseTime = 2_000_000;\n\n    // Simulate 10 failed attempts (spread across time to avoid rate limit)\n    const results = Array.from({ length: 10 }, (_, i) =>\n      handler.login(ip, username, `wrong-${i}`, baseTime + i * 10_000)\n    );\n\n    // First 9 should return invalid_credentials\n    for (let i = 0; i < 9; i++) {\n      expect(results[i].error).toBe(\"invalid_credentials\");\n    }\n\n    // 10th attempt triggers account lock\n    expect(results[9].error).toBe(\"account_locked\");\n    expect(handler.lockedAccounts.has(username)).toBe(true);\n\n    // Subsequent attempts — even with correct password — are blocked\n    const afterLock = handler.login(ip, username, \"correct-password\", baseTime + 200_000);\n    expect(afterLock.success).toBe(false);\n    expect(afterLock.error).toBe(\"account_locked\");\n  });\n\n  it(\"safe fix: legitimate user can still log in within the rate limit window\", () => {\n    const handler = createRateLimitedAuthHandler({ maxAttemptsPerMinute: 5, lockAfterFailures: 10 });\n    const ip = \"203.0.113.42\";\n    const baseTime = 3_000_000;\n\n    // Two failed attempts then a correct one — all within limit\n    const fail1 = handler.login(ip, \"alice\", \"wrong1\", baseTime);\n    const fail2 = handler.login(ip, \"alice\", \"wrong2\", baseTime + 1000);\n    const success = handler.login(ip, \"alice\", \"correct-password\", baseTime + 2000);\n\n    expect(fail1.error).toBe(\"invalid_credentials\");\n    expect(fail2.error).toBe(\"invalid_credentials\");\n    expect(success.success).toBe(true);\n    expect(success.token).toBe(\"jwt-token-abc123\");\n  });\n});\n",
+        "reasoning": "Tests demonstrate that an unprotected auth handler allows unlimited brute-force attempts, while the safe fix enforces per-IP rate limiting (5/min) and account locking after 10 failures, blocking further attempts even with correct credentials.",
+        "language": "js"
+      },
+      "attempts": [
+        {
+          "model": "anthropic/claude-sonnet-4.6",
+          "ok": true,
+          "durationMs": 29671
+        }
+      ]
+    }
+  ],
+  "run": {
+    "runId": "run_mpts6djf",
+    "success": true,
+    "numTotalTests": 11,
+    "numPassedTests": 11,
+    "numFailedTests": 0,
+    "durationMs": 4078,
+    "files": [
+      {
+        "filename": "auth-endpoints-not-rate-limited-src-l0.test.ts",
+        "status": "passed",
+        "numPassed": 4,
+        "numFailed": 0,
+        "failureMessages": []
+      },
+      {
+        "filename": "no-observability-stack-detected-src-l0.test.ts",
+        "status": "passed",
+        "numPassed": 4,
+        "numFailed": 0,
+        "failureMessages": []
+      },
+      {
+        "filename": "no-product-analytics-dependency-src-l0.test.ts",
+        "status": "passed",
+        "numPassed": 3,
+        "numFailed": 0,
+        "failureMessages": []
+      }
+    ]
+  }
+}

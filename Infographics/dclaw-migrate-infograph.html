@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>DClaw Migrate — Infographic · One Convergence × DKube</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+/* ── OC Design Tokens — Purple variant ────────── */
+:root {
+  --p25:   #FAF6FD;
+  --p50:   #F5EEFB;
+  --p100:  #E7D8F4;
+  --p300:  #B180F8;
+  --p500:  #7030A0;
+  --p700:  #4A1F6C;
+  --p900:  #2B0E45;
+  --dk:    #6E55A4;
+  --dl:    #9783C0;
+  --dfl:   #D5D5D5;
+  --ok:    #10B981;
+  --warn:  #C2870B;
+  --err:   #EF4444;
+  --info:  #3B82F6;
+  --purple:#8B5CF6;
+  --ink:   #141414;
+  --ink2:  #2A2A2A;
+  --ink3:  #5A5A5A;
+  --ink4:  #8A8A8A;
+  --rule:  #E5E5E5;
+  --paper: #FFFFFF;
+  --cool:  #F6F5F7;
+  --warm:  #FAF8F4;
+  --display: "Manrope", "Inter", sans-serif;
+  --sans:    "Inter", sans-serif;
+  --mono:    "JetBrains Mono", monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+@page { size: 1200px 5600px; margin: 0; }
+body {
+  font-family: var(--sans);
+  color: var(--ink);
+  background: var(--paper);
+  width: 1200px;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.sec { width: 1200px; padding: 0 64px; }
+.sec-inner { padding: 56px 0; border-bottom: 1px solid var(--rule); }
+.sec-inner.no-border { border-bottom: none; }
+.ey { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink4); margin-bottom: 10px; }
+.ey.purple { color: var(--p500); }
+.ey.light { color: rgba(255,255,255,0.5); }
+h1 { font-family: var(--display); font-size: 80px; font-weight: 800; line-height: 0.9; letter-spacing: -0.05em; }
+h2 { font-family: var(--display); font-size: 40px; font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; }
+h3 { font-family: var(--sans); font-size: 22px; font-weight: 600; line-height: 1.2; letter-spacing: -0.01em; }
+h4 { font-family: var(--sans); font-size: 15px; font-weight: 600; line-height: 1.3; }
+p  { font-family: var(--sans); font-size: 14px; line-height: 1.65; color: var(--ink3); }
+.stat-num { font-family: var(--display); font-size: 56px; font-weight: 800; line-height: 1; letter-spacing: -0.05em; color: var(--p500); }
+.stat-num.white { color: var(--paper); }
+.stat-num.ink   { color: var(--ink); }
+.stat-lbl { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink4); margin-top: 4px; }
+.stat-lbl.light { color: rgba(255,255,255,0.45); }
+.tag { display: inline-flex; align-items: center; background: var(--p50); color: var(--p700); border: 1px solid var(--p100); font-size: 11px; font-weight: 600; font-family: var(--sans); padding: 3px 9px; border-radius: 2px; }
+.tag.dark    { background: rgba(112,48,160,.1); color: var(--p300); border-color: rgba(112,48,160,.25); }
+.tag.ok      { background: #ECF8F0; color: var(--ok); border-color: #B7DFCB; }
+.tag.err     { background: #FEF2F2; color: var(--err); border-color: #FECACA; }
+.tag.info    { background: #EFF6FF; color: var(--info); border-color: #BFDBFE; }
+.tag.purple  { background: #F5F3FF; color: var(--purple); border-color: #DDD6FE; }
+.tag.ink     { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.tag.neutral { background: var(--cool); color: var(--ink3); border-color: var(--rule); }
+hr { border: none; border-top: 1px solid var(--rule); }
+hr.ink-rule { border-top: 1px solid var(--ink); }
+hr.light    { border-top: 1px solid rgba(255,255,255,0.12); }
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+.g4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+.row { display: flex; align-items: flex-start; gap: 40px; }
+.cell { border: 1px solid var(--rule); border-radius: 2px; padding: 20px 22px; background: var(--paper); }
+.cell.amber-bg { background: var(--p25); border-color: var(--p100); }
+.cell.dark { border-color: rgba(255,255,255,0.12); background: rgba(255,255,255,0.05); }
+.bar-track { height: 6px; background: var(--rule); border-radius: 0; margin-top: 6px; }
+.bar-fill  { height: 6px; background: var(--p500); }
+.accent { border-left: 3px solid var(--p500); padding-left: 14px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink4); padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--ink); }
+tbody td { padding: 10px 12px; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+tbody tr:last-child td { border-bottom: none; }
+.mono { font-family: var(--mono); }
+.feat-icon { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; background: var(--p50); border: 1px solid var(--p100); border-radius: 2px; font-size: 18px; flex-shrink: 0; }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 0; flex-shrink: 0; }
+/* Phase connector */
+.phase-arrow { display: flex; align-items: center; gap: 6px; }
+.phase-arrow::after { content: '→'; font-family: var(--mono); color: var(--p500); font-size: 16px; margin: 0 4px; }
+.phase-arrow:last-child::after { display: none; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 1 — HERO
+══════════════════════════════════════════════ -->
+<div style="background:var(--ink);width:1200px;padding:0 64px;">
+  <div style="padding:56px 0 40px;">
+
+    <!-- Top bar -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:48px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.1);">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <svg width="40" height="40" viewBox="0 0 64 64" fill="none">
+          <polygon points="32,4 60,20 60,44 32,60 4,44 4,20" fill="#6E55A4"/>
+          <polygon points="32,4 60,20 32,36 4,20" fill="#9783C0"/>
+          <polygon points="4,20 32,36 32,60 4,44" fill="#D5D5D5" opacity="0.6"/>
+        </svg>
+        <div>
+          <div style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:0.15em;color:rgba(255,255,255,0.4);margin-bottom:2px;">One Convergence · DKube</div>
+          <div style="font-family:var(--display);font-size:14px;font-weight:700;color:rgba(255,255,255,0.9);letter-spacing:-0.01em;">Product Intelligence Report</div>
+        </div>
+      </div>
+      <div style="font-family:var(--mono);font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:0.08em;">MAY 2026 · v1.4 · CONFIDENTIAL</div>
+    </div>
+
+    <!-- Hero text -->
+    <div style="display:flex;align-items:flex-end;gap:60px;">
+      <div style="flex:1;">
+        <div class="ey light" style="margin-bottom:16px;">AI-guided cloud &amp; database migration platform</div>
+        <h1 style="color:var(--paper);margin-bottom:8px;">DClaw<br/>Migrate</h1>
+        <div style="width:56px;height:2px;background:var(--p500);margin:24px 0;"></div>
+        <p style="font-size:17px;line-height:1.6;color:rgba(255,255,255,0.65);max-width:480px;">
+          Plan, execute, validate, and roll back database and cloud migrations —
+          with an AI copilot that knows your schema, your connections, and your
+          job state at every step.
+        </p>
+      </div>
+
+      <!-- Hero stats -->
+      <div style="flex:0 0 340px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,0.06);">
+          <div style="background:var(--p700);padding:24px 20px;">
+            <div class="stat-num white" style="font-size:48px;">64</div>
+            <div class="stat-lbl light">API endpoints</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.04);padding:24px 20px;">
+            <div class="stat-num" style="font-size:48px;color:var(--p300);">12</div>
+            <div class="stat-lbl light">Data models</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.04);padding:24px 20px;">
+            <div class="stat-num" style="font-size:48px;color:var(--p300);">8</div>
+            <div class="stat-lbl light">AI capabilities</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.04);padding:24px 20px;">
+            <div class="stat-num" style="font-size:48px;color:var(--p300);">6</div>
+            <div class="stat-lbl light">Migration phases</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tag row -->
+    <div style="display:flex;gap:8px;margin-top:40px;padding-top:28px;border-top:1px solid rgba(255,255,255,0.08);flex-wrap:wrap;">
+      <span class="tag dark">FastAPI · Python</span>
+      <span class="tag dark">Next.js 14 App Router</span>
+      <span class="tag dark">PostgreSQL 16</span>
+      <span class="tag dark">Docker · Kubernetes · Helm</span>
+      <span class="tag dark">OpenRouter · Kimi K2</span>
+      <span class="tag dark">Ollama local fallback</span>
+      <span class="tag dark">SQLAlchemy 2.0 · asyncpg</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 2 — WHAT IS DCLAW MIGRATE
+══════════════════════════════════════════════ -->
+<div class="sec" style="background:var(--warm);">
+  <div class="sec-inner">
+    <div class="row" style="gap:56px;align-items:center;">
+      <div style="flex:0 0 400px;">
+        <div class="ey purple">The platform</div>
+        <h2 style="margin-bottom:16px;">One platform.<br/>The full migration lifecycle.</h2>
+        <p style="margin-bottom:20px;">
+          DClaw Migrate replaces the patchwork of migration scripts, spreadsheets, and
+          Slack threads with a structured, AI-assisted workflow. Every migration lives in one
+          place: connections, wave plans, schema mappings, execution logs, validation reports,
+          cutover checklists, and AI-generated runbooks.
+        </p>
+        <p>
+          The AI copilot is context-aware — it knows your source/target connection types,
+          your schema, and your current job state. Ask it to assess risk, suggest column
+          mappings, draft a rollback procedure, or explain a validation failure.
+        </p>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--paper);border:1px solid var(--p100);border-left:3px solid var(--p500);border-radius:2px;">
+          <span style="font-size:22px;">🗺️</span>
+          <div><h4 style="color:var(--p700);">Wave-based migration planning</h4><p style="font-size:12px;margin:0;">Group jobs into ordered waves. AI optimizes sequencing and balances risk across batches.</p></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--paper);border:1px solid var(--rule);border-radius:2px;">
+          <span style="font-size:22px;">🔍</span>
+          <div><h4>Live schema discovery</h4><p style="font-size:12px;margin:0;">Connect to source PostgreSQL-family DB, introspect tables and columns, generate draft mappings automatically.</p></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--paper);border:1px solid var(--rule);border-radius:2px;">
+          <span style="font-size:22px;">✅</span>
+          <div><h4>Post-migration validation</h4><p style="font-size:12px;margin:0;">Per-table row count comparison, checksum verification, and sample diff. Pass/fail per table.</p></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--paper);border:1px solid var(--rule);border-radius:2px;">
+          <span style="font-size:22px;">🔄</span>
+          <div><h4>Blue-green cutover with 1-click rollback</h4><p style="font-size:12px;margin:0;">Execute cutover, mark complete, or roll back with a single API call. Pre/post check checklists included.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 3 — 8 AI CAPABILITIES
+══════════════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-inner">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:32px;">
+      <div>
+        <div class="ey purple">AI feature set · 8 endpoints · all in production</div>
+        <h2>8 AI capabilities, all grounded in migration context.</h2>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <span class="tag ok">Context-aware</span>
+        <span class="tag info">OpenRouter · Kimi K2</span>
+        <span class="tag neutral">Ollama fallback</span>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+      <div class="cell" style="border-left:3px solid var(--p500);">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <div class="feat-icon">💬</div>
+          <span class="tag ok" style="font-size:9px;">Core</span>
+        </div>
+        <h4 style="margin-bottom:4px;">Migration chat</h4>
+        <p style="font-size:12px;">Job-context-aware Q&amp;A. Knows source/target types, schema, status. Ask anything.</p>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--p700);margin-top:8px;">/ai/migrate-chat</div>
+      </div>
+      <div class="cell" style="border-left:3px solid var(--p500);">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <div class="feat-icon">🗂️</div>
+          <span class="tag ok" style="font-size:9px;">Core</span>
+        </div>
+        <h4 style="margin-bottom:4px;">Schema mapping suggestions</h4>
+        <p style="font-size:12px;">Column-level type mapping recommendations based on source schema context.</p>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--p700);margin-top:8px;">/ai/suggest-mappings</div>
+      </div>
+      <div class="cell" style="border-left:3px solid var(--p500);">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <div class="feat-icon">⚠️</div>
+          <span class="tag ok" style="font-size:9px;">Core</span>
+        </div>
+        <h4 style="margin-bottom:4px;">Risk assessment</h4>
+        <p style="font-size:12px;">Top risks for a job configuration with concrete mitigation steps per risk.</p>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--p700);margin-top:8px;">/ai/assess-risk</div>
+      </div>
+      <div class="cell" style="border-left:3px solid var(--p500);">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <div class="feat-icon">🌊</div>
+          <span class="tag ok" style="font-size:9px;">Core</span>
+        </div>
+        <h4 style="margin-bottom:4px;">Wave planning</h4>
+        <p style="font-size:12px;">AI-optimized wave grouping and sequencing. Minimizes blast radius, balances risk.</p>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--p700);margin-top:8px;">/ai/plan-waves</div>
+      </div>
+
+      <div class="cell" style="background:var(--cool);">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <div class="feat-icon">📊</div>
+          <span class="tag neutral" style="font-size:9px;">Asset</span>
+        </div>
+        <h4 style="margin-bottom:4px;">App assessment</h4>
+        <p style="font-size:12px;">Effort estimate and migration strategy recommendation per application asset.</p>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--ink4);margin-top:8px;">/ai/assess-application</div>
+      </div>
+      <div class="cell" style="background:var(--cool);">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <div class="feat-icon">🔀</div>
+          <span class="tag neutral" style="font-size:9px;">Cutover</span>
+        </div>
+        <h4 style="margin-bottom:4px;">Cutover planning</h4>
+        <p style="font-size:12px;">Pre/post checklist generation and timing recommendations based on job status.</p>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--ink4);margin-top:8px;">/ai/plan-cutover</div>
+      </div>
+      <div class="cell" style="background:var(--cool);">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <div class="feat-icon">☁️</div>
+          <span class="tag neutral" style="font-size:9px;">Strategy</span>
+        </div>
+        <h4 style="margin-bottom:4px;">Cloud strategy</h4>
+        <p style="font-size:12px;">Compare cloud providers for a workload. Placement, cost, and lock-in analysis.</p>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--ink4);margin-top:8px;">/ai/cloud-strategy</div>
+      </div>
+      <div class="cell" style="background:var(--cool);">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+          <div class="feat-icon">🐳</div>
+          <span class="tag neutral" style="font-size:9px;">Container</span>
+        </div>
+        <h4 style="margin-bottom:4px;">Containerization</h4>
+        <p style="font-size:12px;">Dockerfile and K8s manifest guidance for application containerization.</p>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--ink4);margin-top:8px;">/ai/containerize</div>
+      </div>
+    </div>
+
+    <!-- AI stack note -->
+    <div style="margin-top:16px;padding:16px 20px;background:var(--p25);border:1px solid var(--p100);border-radius:2px;display:flex;align-items:center;gap:20px;">
+      <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--p700);white-space:nowrap;">AI stack</div>
+      <p style="font-size:12px;color:var(--ink3);margin:0;">
+        <strong style="color:var(--p700);">Primary:</strong> OpenRouter → moonshotai/kimi-k2 · 60s timeout · 2048 max tokens · temperature 0.3 ·
+        <strong style="color:var(--ink);">Fallback:</strong> Ollama → llama3 (local, no API key needed) ·
+        <strong style="color:var(--err);">On error:</strong> HTTP 502 with detail — never silent empty response
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 4 — MIGRATION LIFECYCLE
+══════════════════════════════════════════════ -->
+<div class="sec" style="background:var(--ink);">
+  <div class="sec-inner no-border">
+    <div class="ey light" style="margin-bottom:8px;">End-to-end migration lifecycle · 6 phases</div>
+    <h2 style="color:var(--paper);margin-bottom:32px;">Every step tracked. Every decision recorded.</h2>
+
+    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:rgba(255,255,255,0.06);margin-bottom:32px;">
+      <div style="background:var(--p700);padding:24px 20px;">
+        <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.6);margin-bottom:8px;">Phase 1</div>
+        <div style="font-family:var(--display);font-size:18px;font-weight:700;color:white;margin-bottom:8px;">Setup</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.65);line-height:1.6;">Register connections · Test connectivity · Create job</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);padding:24px 20px;">
+        <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.4);margin-bottom:8px;">Phase 2</div>
+        <div style="font-family:var(--display);font-size:18px;font-weight:700;color:var(--p300);margin-bottom:8px;">Plan</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;">Discover schema · Edit mappings · AI risk assessment · Assign wave</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);padding:24px 20px;">
+        <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.4);margin-bottom:8px;">Phase 3</div>
+        <div style="font-family:var(--display);font-size:18px;font-weight:700;color:var(--p300);margin-bottom:8px;">Execute</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;">Run migration · Monitor execution logs in real-time</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);padding:24px 20px;">
+        <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.4);margin-bottom:8px;">Phase 4</div>
+        <div style="font-family:var(--display);font-size:18px;font-weight:700;color:var(--p300);margin-bottom:8px;">Validate</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;">Row count + checksum per table · Run AI-generated test cases</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);padding:24px 20px;">
+        <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.4);margin-bottom:8px;">Phase 5</div>
+        <div style="font-family:var(--display);font-size:18px;font-weight:700;color:var(--p300);margin-bottom:8px;">Cutover</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;">AI cutover plan · Execute · 1-click rollback if checks fail</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.04);padding:24px 20px;">
+        <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.4);margin-bottom:8px;">Phase 6</div>
+        <div style="font-family:var(--display);font-size:18px;font-weight:700;color:var(--p300);margin-bottom:8px;">Optimize</div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;">AI recommendations · Auto-generate runbooks per phase</div>
+      </div>
+    </div>
+
+    <!-- Job state machine -->
+    <div>
+      <div style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.3);margin-bottom:14px;">Job status state machine</div>
+      <div style="display:flex;align-items:center;gap:0;">
+        <div style="padding:8px 16px;background:rgba(107,114,128,0.3);border:1px solid rgba(107,114,128,0.5);font-family:var(--mono);font-size:12px;font-weight:600;color:#D1D5DB;">draft</div>
+        <div style="font-family:var(--mono);font-size:14px;color:var(--p500);padding:0 10px;">→<span style="font-size:9px;display:block;color:rgba(255,255,255,0.3);line-height:1;">POST /run</span></div>
+        <div style="padding:8px 16px;background:rgba(112,48,160,0.2);border:1px solid rgba(112,48,160,0.4);font-family:var(--mono);font-size:12px;font-weight:600;color:var(--p300);">running</div>
+        <div style="font-family:var(--mono);font-size:14px;color:var(--p500);padding:0 10px;">→<span style="font-size:9px;display:block;color:rgba(255,255,255,0.3);line-height:1;">engine</span></div>
+        <div style="padding:8px 16px;background:rgba(16,185,129,0.2);border:1px solid rgba(16,185,129,0.4);font-family:var(--mono);font-size:12px;font-weight:600;color:#6EE7B7;">completed</div>
+        <div style="font-family:var(--mono);font-size:16px;color:rgba(255,255,255,0.2);padding:0 20px;">|</div>
+        <div style="padding:8px 16px;background:rgba(112,48,160,0.2);border:1px solid rgba(112,48,160,0.4);font-family:var(--mono);font-size:12px;font-weight:600;color:var(--p300);">running</div>
+        <div style="font-family:var(--mono);font-size:14px;color:var(--err);padding:0 10px;">→<span style="font-size:9px;display:block;color:rgba(255,255,255,0.3);line-height:1;">POST /cancel</span></div>
+        <div style="padding:8px 16px;background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.4);font-family:var(--mono);font-size:12px;font-weight:600;color:#FCA5A5;">failed</div>
+        <div style="margin-left:24px;font-size:12px;color:rgba(255,255,255,0.35);">Editing a running job returns 409</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 5 — TECH STACK + ARCHITECTURE
+══════════════════════════════════════════════ -->
+<div class="sec" style="background:var(--cool);">
+  <div class="sec-inner">
+    <div class="ey purple" style="margin-bottom:8px;">Technology stack · Architecture</div>
+    <h2 style="margin-bottom:28px;">Every layer, specified.</h2>
+
+    <div class="g4" style="gap:14px;margin-bottom:20px;">
+      <div class="cell" style="background:var(--p25);border-color:var(--p100);">
+        <div style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:var(--p700);margin-bottom:10px;">Frontend · Port 3035 / 3033</div>
+        <div style="display:flex;flex-direction:column;gap:5px;">
+          <div style="font-size:12px;font-weight:600;">Next.js 14.2 App Router</div>
+          <div style="font-size:11px;color:var(--ink3);">TypeScript · strict mode</div>
+          <div style="font-size:11px;color:var(--ink3);">Tailwind CSS</div>
+          <div style="font-size:11px;color:var(--ink3);">Pre-built design system ui/</div>
+          <div style="font-size:11px;color:var(--ink3);">CopilotPanel — global AI sidebar</div>
+          <div style="font-size:11px;color:var(--ink3);">11 pages + job detail tabs</div>
+        </div>
+      </div>
+      <div class="cell" style="background:var(--p25);border-color:var(--p100);">
+        <div style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:var(--p700);margin-bottom:10px;">Backend · Port 8121 / 8033</div>
+        <div style="display:flex;flex-direction:column;gap:5px;">
+          <div style="font-size:12px;font-weight:600;">FastAPI · Python 3.11+</div>
+          <div style="font-size:11px;color:var(--ink3);">SQLAlchemy 2.0 async</div>
+          <div style="font-size:11px;color:var(--ink3);">Pydantic v2 · asyncpg driver</div>
+          <div style="font-size:11px;color:var(--ink3);">Repository pattern</div>
+          <div style="font-size:11px;color:var(--ink3);">Alembic migrations (4 versions)</div>
+          <div style="font-size:11px;color:var(--ink3);">Logto JWT auth (optional)</div>
+        </div>
+      </div>
+      <div class="cell">
+        <div style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink4);margin-bottom:10px;">AI services layer</div>
+        <div style="display:flex;flex-direction:column;gap:5px;">
+          <div style="font-size:12px;font-weight:600;">ai_copilot.py gateway</div>
+          <div style="font-size:11px;color:var(--ink3);">OpenRouter → Kimi K2 (primary)</div>
+          <div style="font-size:11px;color:var(--ink3);">Ollama → llama3 (local fallback)</div>
+          <div style="font-size:11px;color:var(--ink3);">schema_discovery.py (asyncpg)</div>
+          <div style="font-size:11px;color:var(--ink3);">validation.py (row + checksum)</div>
+          <div style="font-size:11px;color:var(--ink3);">httpx async client · 60s timeout</div>
+        </div>
+      </div>
+      <div class="cell">
+        <div style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink4);margin-bottom:10px;">Data &amp; Deploy</div>
+        <div style="display:flex;flex-direction:column;gap:5px;">
+          <div style="font-size:12px;font-weight:600;">PostgreSQL 16 · asyncpg</div>
+          <div style="font-size:11px;color:var(--ink3);">12 tables · UUID PKs</div>
+          <div style="font-size:11px;color:var(--ink3);">Docker Compose (3 containers)</div>
+          <div style="font-size:11px;color:var(--ink3);">Helm chart · helm/</div>
+          <div style="font-size:11px;color:var(--ink3);">CloudNativePG in K8s</div>
+          <div style="font-size:11px;color:var(--ink3);">44 test files · 214 test cases</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- API surface -->
+    <div style="background:var(--ink);border-radius:2px;padding:20px 24px;">
+      <div style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.3);margin-bottom:12px;">REST API surface · 64 endpoints across 13 modules</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <span class="tag dark" style="font-size:10px;">connections (6)</span>
+        <span class="tag dark" style="font-size:10px;">jobs (7)</span>
+        <span class="tag dark" style="font-size:10px;">mappings (5)</span>
+        <span class="tag dark" style="font-size:10px;">logs (1)</span>
+        <span class="tag dark" style="font-size:10px;">validations (2)</span>
+        <span class="tag dark" style="font-size:10px;">cutover (6)</span>
+        <span class="tag dark" style="font-size:10px;">test-cases (3)</span>
+        <span class="tag dark" style="font-size:10px;">optimization (3)</span>
+        <span class="tag dark" style="font-size:10px;">runbooks (5)</span>
+        <span class="tag dark" style="font-size:10px;">waves (7)</span>
+        <span class="tag dark" style="font-size:10px;">assets (5)</span>
+        <span class="tag dark" style="font-size:10px;">ai (8)</span>
+        <span class="tag dark" style="font-size:10px;">dashboard (1) + health (1)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 6 — DATA MODEL (12 TABLES)
+══════════════════════════════════════════════ -->
+<div class="sec">
+  <div class="sec-inner">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px;">
+      <div>
+        <div class="ey purple">Data model · 12 PostgreSQL tables</div>
+        <h2>Complete domain model — connections to post-migration.</h2>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Table</th>
+          <th>Key fields</th>
+          <th>Relationships</th>
+          <th>Status field</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background:var(--p25);">
+          <td style="font-weight:700;">connections</td>
+          <td class="mono" style="font-size:12px;color:var(--ink3);">name · connection_type · role · host · port · ssl_enabled</td>
+          <td style="font-size:12px;color:var(--ink3);">source/target of migration_jobs</td>
+          <td><span class="tag" style="font-size:10px;">unchecked · ok · error</span></td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">migration_jobs</td>
+          <td class="mono" style="font-size:12px;color:var(--ink3);">name · migration_type · source/target_connection_id · wave_id</td>
+          <td style="font-size:12px;color:var(--ink3);">FK → connections, waves</td>
+          <td><span class="tag" style="font-size:10px;">draft · running · completed · failed</span></td>
+        </tr>
+        <tr style="background:var(--p25);">
+          <td style="font-weight:700;">migration_waves</td>
+          <td class="mono" style="font-size:12px;color:var(--ink3);">name · sequence_order · risk_level</td>
+          <td style="font-size:12px;color:var(--ink3);">1:N → migration_jobs</td>
+          <td><span class="tag" style="font-size:10px;">planned · in_progress · completed</span></td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">schema_mappings</td>
+          <td class="mono" style="font-size:12px;color:var(--ink3);">source/target_table · source/target_column · transform_rule · is_excluded</td>
+          <td style="font-size:12px;color:var(--ink3);">FK → migration_jobs (CASCADE)</td>
+          <td style="font-size:12px;color:var(--ink4);">—</td>
+        </tr>
+        <tr style="background:var(--p25);">
+          <td style="font-weight:700;">execution_logs</td>
+          <td class="mono" style="font-size:12px;color:var(--ink3);">level · message · rows_processed</td>
+          <td style="font-size:12px;color:var(--ink3);">FK → migration_jobs (CASCADE)</td>
+          <td><span class="tag" style="font-size:10px;">info · warning · error</span></td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">validation_reports</td>
+          <td class="mono" style="font-size:12px;color:var(--ink3);">table_name · source/target_row_count · checksum_match · sample_mismatches</td>
+          <td style="font-size:12px;color:var(--ink3);">FK → migration_jobs (CASCADE)</td>
+          <td><span class="tag" style="font-size:10px;">passed · failed · partial</span></td>
+        </tr>
+        <tr style="background:var(--p25);">
+          <td style="font-weight:700;">cutover_plans</td>
+          <td class="mono" style="font-size:12px;color:var(--ink3);">strategy · pre/post_checks · rollback_procedure</td>
+          <td style="font-size:12px;color:var(--ink3);">1:1 FK → migration_jobs (CASCADE)</td>
+          <td><span class="tag" style="font-size:10px;">planned · executing · completed · rolled_back</span></td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">application_assets</td>
+          <td class="mono" style="font-size:12px;color:var(--ink3);">asset_type · migration_strategy · effort_estimate_days · risk_level</td>
+          <td style="font-size:12px;color:var(--ink3);">Standalone (no job FK)</td>
+          <td><span class="tag" style="font-size:10px;">pending · in_progress · completed · blocked</span></td>
+        </tr>
+        <tr style="background:var(--p25);">
+          <td style="font-weight:700;">optimization_recs</td>
+          <td class="mono" style="font-size:12px;color:var(--ink3);">category · title · estimated_savings · priority</td>
+          <td style="font-size:12px;color:var(--ink3);">FK → migration_jobs (CASCADE)</td>
+          <td><span class="tag" style="font-size:10px;">pending · accepted · dismissed</span></td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">runbooks</td>
+          <td class="mono" style="font-size:12px;color:var(--ink3);">title · runbook_type · content (markdown)</td>
+          <td style="font-size:12px;color:var(--ink3);">FK → migration_jobs (CASCADE)</td>
+          <td><span class="tag" style="font-size:10px;">pre_migration · cutover · rollback · post_migration</span></td>
+        </tr>
+        <tr style="background:var(--p25);">
+          <td style="font-weight:700;">test_cases</td>
+          <td class="mono" style="font-size:12px;color:var(--ink3);">name · test_type · query_source · query_target · actual_result</td>
+          <td style="font-size:12px;color:var(--ink3);">FK → migration_jobs (CASCADE)</td>
+          <td><span class="tag" style="font-size:10px;">pending · passed · failed · error</span></td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;">execution_logs</td>
+          <td class="mono" style="font-size:12px;color:var(--ink3);">level · message · rows_processed · created_at</td>
+          <td style="font-size:12px;color:var(--ink3);">FK → migration_jobs (CASCADE)</td>
+          <td><span class="tag" style="font-size:10px;">info · warning · error</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 7 — DESIGN SYSTEM
+══════════════════════════════════════════════ -->
+<div class="sec" style="background:var(--warm);">
+  <div class="sec-inner">
+    <div class="row" style="gap:56px;align-items:flex-start;">
+      <div style="flex:0 0 340px;">
+        <div class="ey purple">Design system · One Convergence Vol. 01 — Purple</div>
+        <h2 style="font-size:32px;margin-bottom:16px;">Purple on white.<br/>Operational precision.</h2>
+        <p style="margin-bottom:20px;">
+          DClaw Migrate uses the One Convergence design token system with amber
+          as the primary brand hue. Manrope 800 for display headlines,
+          Inter for body, JetBrains Mono for labels and metadata.
+          Sharp 2px corners, 1px rules.
+        </p>
+        <!-- Color swatches -->
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;gap:0;">
+            <div style="width:48px;height:48px;background:#7030A0;"></div>
+            <div style="width:48px;height:48px;background:#B180F8;"></div>
+            <div style="width:48px;height:48px;background:#4A1F6C;"></div>
+            <div style="width:48px;height:48px;background:#E7D8F4;"></div>
+            <div style="width:48px;height:48px;background:#10B981;"></div>
+            <div style="width:48px;height:48px;background:#EF4444;"></div>
+            <div style="width:48px;height:48px;background:#141414;"></div>
+            <div style="width:48px;height:48px;background:#FFFFFF;border:1px solid #E5E5E5;"></div>
+          </div>
+          <div style="display:flex;gap:0;">
+            <div style="font-family:var(--mono);font-size:8px;color:var(--ink4);width:48px;text-align:center;padding-top:3px;">Purple 500</div>
+            <div style="font-family:var(--mono);font-size:8px;color:var(--ink4);width:48px;text-align:center;padding-top:3px;">Purple 300</div>
+            <div style="font-family:var(--mono);font-size:8px;color:var(--ink4);width:48px;text-align:center;padding-top:3px;">Purple 700</div>
+            <div style="font-family:var(--mono);font-size:8px;color:var(--ink4);width:48px;text-align:center;padding-top:3px;">Purple 100</div>
+            <div style="font-family:var(--mono);font-size:8px;color:var(--ink4);width:48px;text-align:center;padding-top:3px;">OK / Pass</div>
+            <div style="font-family:var(--mono);font-size:8px;color:var(--ink4);width:48px;text-align:center;padding-top:3px;">Error / Fail</div>
+            <div style="font-family:var(--mono);font-size:8px;color:var(--ink4);width:48px;text-align:center;padding-top:3px;">Ink</div>
+            <div style="font-family:var(--mono);font-size:8px;color:var(--ink4);width:48px;text-align:center;padding-top:3px;">Paper</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="flex:1;display:flex;flex-direction:column;gap:20px;">
+        <!-- Status badge palette -->
+        <div>
+          <div class="ey" style="margin-bottom:10px;">Job status badge palette</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <span class="tag neutral">draft</span>
+            <span style="display:inline-flex;align-items:center;background:#F5EEFB;color:#4A1F6C;border:1px solid #E7D8F4;font-size:11px;font-weight:600;padding:3px 9px;border-radius:2px;">running</span>
+            <span class="tag ok">completed</span>
+            <span class="tag err">failed</span>
+            <span class="tag info">planned</span>
+            <span class="tag purple">rolled_back</span>
+          </div>
+        </div>
+        <!-- Type scale -->
+        <div>
+          <hr class="ink-rule" style="margin-bottom:12px;"/>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:baseline;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--rule);">
+              <span style="font-family:var(--display);font-size:36px;font-weight:800;letter-spacing:-0.04em;line-height:1;">Display / H1</span>
+              <span class="mono" style="font-size:10px;color:var(--ink4);">Manrope 800 · 36–80px · -0.04em</span>
+            </div>
+            <div style="display:flex;align-items:baseline;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--rule);">
+              <span style="font-family:var(--display);font-size:24px;font-weight:700;letter-spacing:-0.03em;">Heading H2</span>
+              <span class="mono" style="font-size:10px;color:var(--ink4);">Manrope 700 · 24–40px · -0.03em</span>
+            </div>
+            <div style="display:flex;align-items:baseline;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--rule);">
+              <span style="font-family:var(--sans);font-size:17px;font-weight:400;line-height:1.55;">Body — clear and direct. One idea per sentence.</span>
+              <span class="mono" style="font-size:10px;color:var(--ink4);">Inter 400 · 14–17px</span>
+            </div>
+            <div style="display:flex;align-items:baseline;justify-content:space-between;padding:8px 0;">
+              <span style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--ink4);">EYEBROW · LABEL · METADATA</span>
+              <span class="mono" style="font-size:10px;color:var(--ink4);">JetBrains Mono · 9–11px</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 8 — FOOTER
+══════════════════════════════════════════════ -->
+<div style="background:var(--ink);width:1200px;padding:0 64px;">
+  <div style="padding:40px 0;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(255,255,255,0.08);">
+    <div style="display:flex;align-items:center;gap:16px;">
+      <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+        <polygon points="32,4 60,20 60,44 32,60 4,44 4,20" fill="#6E55A4"/>
+        <polygon points="32,4 60,20 32,36 4,20" fill="#9783C0"/>
+        <polygon points="4,20 32,36 32,60 4,44" fill="#D5D5D5" opacity="0.6"/>
+      </svg>
+      <div>
+        <div style="font-family:var(--display);font-size:15px;font-weight:700;color:var(--paper);">DClaw Migrate</div>
+        <div style="font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.35);margin-top:2px;">DKube — an MLOps platform by One Convergence</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:40px;">
+      <div style="text-align:center;">
+        <div style="font-family:var(--display);font-size:28px;font-weight:800;color:var(--p300);letter-spacing:-0.04em;">64</div>
+        <div style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.08em;margin-top:2px;">API Endpoints</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-family:var(--display);font-size:28px;font-weight:800;color:var(--p300);letter-spacing:-0.04em;">12</div>
+        <div style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.08em;margin-top:2px;">Data Models</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-family:var(--display);font-size:28px;font-weight:800;color:var(--p300);letter-spacing:-0.04em;">8</div>
+        <div style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.08em;margin-top:2px;">AI Capabilities</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-family:var(--display);font-size:28px;font-weight:800;color:var(--p300);letter-spacing:-0.04em;">6</div>
+        <div style="font-family:var(--mono);font-size:9px;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.08em;margin-top:2px;">Phases</div>
+      </div>
+    </div>
+
+    <div style="text-align:right;">
+      <div style="font-family:var(--mono);font-size:10px;color:rgba(255,255,255,0.4);">localhost:3035</div>
+      <div style="font-family:var(--mono);font-size:10px;color:rgba(255,255,255,0.25);margin-top:3px;">© 2026 One Convergence · Confidential</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
