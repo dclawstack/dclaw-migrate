@@ -27,6 +27,36 @@ const stack = [
   "pytest-asyncio", "CloudNativePG", "Logto JWT",
 ];
 
+const roadmapLive = [
+  { title: "Connection Registry",                              note: "PostgreSQL · MySQL · MongoDB · MSSQL · RDS · Cloud SQL · Azure SQL", tag: "P0" },
+  { title: "Migration Jobs — full-load, CDC, schema-only",    note: undefined,                                                            tag: "P0" },
+  { title: "Live Schema Discovery",                           note: "PostgreSQL family · table + column introspection",                   tag: "P0" },
+  { title: "Schema Mappings with AI type suggestions",        note: undefined,                                                            tag: "P0" },
+  { title: "Wave Planning with AI grouping optimisation",     note: undefined,                                                            tag: "P0" },
+  { title: "Application Asset Inventory",                     note: "6R migration strategies + AI effort estimates",                      tag: "P0" },
+  { title: "Execution Logs — real-time, severity-filtered",   note: undefined,                                                            tag: "P0" },
+  { title: "Post-migration Validation",                       note: "row count + checksum per table",                                    tag: "P0" },
+  { title: "Cutover Management",                              note: "blue-green · 1-click rollback · state machine",                     tag: "P1.1" },
+  { title: "AI Test Generation + parallel runner",            note: undefined,                                                            tag: "P1.2" },
+  { title: "Post-migration Optimisation Recommendations",     note: "right-sizing · cost · reliability",                                 tag: "P1.4" },
+  { title: "Runbook Generation — 5 types, AI-authored SOPs",  note: undefined,                                                            tag: "P1.4" },
+  { title: "AI Copilot — 8 context-aware endpoints",          note: "OpenRouter Kimi K2 · Ollama fallback",                              tag: "P0" },
+  { title: "Dashboard KPI aggregation",                       note: undefined,                                                            tag: "P0" },
+];
+
+const roadmapNext = [
+  { title: "Auth rate limiting",                              note: "slowapi · 5 req/min per IP · account locking",                      tag: "Sprint 0" },
+  { title: "CORS hardening — explicit origin allowlist",      note: undefined,                                                            tag: "Sprint 0" },
+  { title: "Sentry observability",                            note: "error tracking + distributed traces, backend + frontend",            tag: "Sprint 0" },
+  { title: "Mutation score ≥ 60%",                            note: "stronger test assertions across all integration tests",              tag: "Sprint 0" },
+  { title: "MySQL source introspection",                      note: "asyncmy driver",                                                    tag: "P0.4" },
+  { title: "MongoDB collection discovery",                    note: undefined,                                                            tag: "P0.4" },
+  { title: "CDC groundwork",                                  note: "binlog + WAL position tracking",                                    tag: "P0.4" },
+  { title: "Enhanced type mapping",                           note: "JSON→JSONB · enum inference · VARCHAR length",                      tag: "P0.4" },
+  { title: "Proactive monitoring agent",                      note: "pre-cutover health checks · replication lag alerts",                 tag: "P1.3" },
+  { title: "Streaming AI responses (SSE)",                    note: "long-running analysis without timeout",                             tag: "P1.3" },
+];
+
 const footerLinks = {
   "Core": [
     { label: "Dashboard",   href: "/dashboard" },
@@ -594,6 +624,89 @@ export default function LandingPage() {
               </Link>
             </div>
           </FadeUp>
+        </section>
+
+        {/* ── ROADMAP ──────────────────────────────────────────────────────── */}
+        <section id="roadmap" className="bg-white px-6 py-32">
+          <div className="mx-auto max-w-7xl">
+            <FadeUp className="mb-20 text-center">
+              <span className="rounded-full bg-accent px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-primary">
+                Roadmap
+              </span>
+              <h2 className="mb-4 mt-6 text-5xl font-black text-foreground md:text-6xl">
+                What&apos;s live.<br />
+                <span className="text-primary">What&apos;s next.</span>
+              </h2>
+              <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
+                The full migration lifecycle is shipped. Sprint 0 hardens the foundation —
+                then schema expansion, CDC, and agentic monitoring.
+              </p>
+            </FadeUp>
+
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+
+              {/* Live */}
+              <FadeUp>
+                <div className="rounded-2xl border border-border bg-card p-8">
+                  <div className="mb-8 flex items-center gap-3">
+                    <span className="rounded-full bg-primary px-3 py-1 font-mono text-xs font-bold text-primary-foreground">
+                      Live
+                    </span>
+                    <span className="text-lg font-black text-foreground">v1.0 · Shipped</span>
+                  </div>
+                  <ul className="space-y-4">
+                    {roadmapLive.map((item) => (
+                      <li key={item.title} className="flex items-start gap-3">
+                        <span className="mt-0.5 shrink-0 font-mono text-xs text-primary">→</span>
+                        <div className="min-w-0 flex-1">
+                          <span className="text-sm font-semibold text-foreground">{item.title}</span>
+                          {item.note && (
+                            <span className="ml-1.5 font-mono text-[10px] text-muted-foreground">
+                              ({item.note})
+                            </span>
+                          )}
+                        </div>
+                        <span className="ml-2 shrink-0 rounded-full border border-border px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
+                          {item.tag}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </FadeUp>
+
+              {/* Next */}
+              <FadeUp delay={120}>
+                <div className="rounded-2xl border border-border bg-card p-8">
+                  <div className="mb-8 flex items-center gap-3">
+                    <span className="rounded-full bg-accent px-3 py-1 font-mono text-xs font-bold text-primary">
+                      Next
+                    </span>
+                    <span className="text-lg font-black text-foreground">Sprint 0 → P1.3</span>
+                  </div>
+                  <ul className="space-y-4">
+                    {roadmapNext.map((item) => (
+                      <li key={item.title} className="flex items-start gap-3">
+                        <span className="mt-0.5 shrink-0 font-mono text-xs text-muted-foreground">→</span>
+                        <div className="min-w-0 flex-1">
+                          <span className="text-sm font-semibold text-foreground">{item.title}</span>
+                          {item.note && (
+                            <span className="ml-1.5 font-mono text-[10px] text-muted-foreground">
+                              ({item.note})
+                            </span>
+                          )}
+                        </div>
+                        <span className="ml-2 shrink-0 rounded-full border border-border px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
+                          {item.tag}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </FadeUp>
+
+            </div>
+          </div>
         </section>
 
         {/* ── FOOTER ───────────────────────────────────────────────────────── */}
