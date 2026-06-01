@@ -1,12 +1,13 @@
-# Graph Report - /home/chandraja/AI_white_noise/dclaw/dclaw-migrate  (2026-05-21)
+# Graph Report - /home/chandraja/AI_white_noise/dclaw/dclaw-migrate  (2026-06-01)
 
 ## Corpus Check
-- Corpus is ~17,570 words - fits in a single context window. You may not need a graph.
+- Corpus is ~34,800 words - fits in a single context window (expanded from ~17,570 with new docs/infographics/slides/obsidian).
 
 ## Summary
-- 376 nodes · 390 edges · 70 communities (34 shown, 36 thin omitted)
-- Extraction: 85% EXTRACTED · 15% INFERRED · 0% AMBIGUOUS · INFERRED: 57 edges (avg confidence: 0.86)
+- 412 nodes · 438 edges · 78 communities (42 shown, 36 thin omitted)
+- Extraction: 85% EXTRACTED · 13% INFERRED · 2% AMBIGUOUS · INFERRED: 57 edges (avg confidence: 0.86)
 - Token cost: 0 input · 0 output
+- **Last sync:** 2026-06-01 · commits `9265d5d` (docs + infographics) and `2672411` (roadmap section)
 
 ## Community Hubs (Navigation)
 - [[_COMMUNITY_UI Component Library|UI Component Library]]
@@ -66,6 +67,14 @@
 - [[_COMMUNITY_Use Case Team Collaboration|Use Case: Team Collaboration]]
 - [[_COMMUNITY_Use Case Reporting & Analytics|Use Case: Reporting & Analytics]]
 - [[_COMMUNITY_Helm Replica Count Config|Helm Replica Count Config]]
+- [[_COMMUNITY_Sprint 0 Engineering Hardening|Sprint 0: Engineering Hardening]] ← **NEW**
+- [[_COMMUNITY_TestForge Security Audit|TestForge Security Audit 2026-05-31]] ← **NEW**
+- [[_COMMUNITY_Infographics & Presentation Artifacts|Infographics & Presentation Artifacts]] ← **NEW**
+- [[_COMMUNITY_Obsidian Knowledge Vault|Obsidian Knowledge Vault]] ← **NEW**
+- [[_COMMUNITY_Landing Page Roadmap Section|Landing Page: Roadmap Section]] ← **NEW**
+- [[_COMMUNITY_PLAN v1.4 Implementation Plan|PLAN v1.4: Implementation Plan]] ← **NEW**
+- [[_COMMUNITY_OC Purple Design System|OC Purple Design System]] ← **NEW**
+- [[_COMMUNITY_Vercel Production Deployment|Vercel Production Deployment]] ← **NEW**
 
 ## God Nodes (most connected - your core abstractions)
 1. `cn()` - 24 edges
@@ -78,6 +87,8 @@
 8. `shadcn/ui component pattern` - 7 edges
 9. `Configuration Guide` - 7 edges
 10. `Helm Chart: dclaw-migrate (v1.0.0)` - 7 edges
+11. `PLAN-v1.4.md` - 6 edges ← **NEW**
+12. `TestForge Audit 2026-05-31` - 6 edges ← **NEW**
 
 ## Surprising Connections (you probably didn't know these)
 - `Input UI Component` --conceptually_related_to--> `Anti-Patterns Table (AGENTS.md)`  [INFERRED]
@@ -90,6 +101,12 @@
   REVISED-PRD.md → PLAN-v1.2.md
 - `Sacred Tech Stack (REVISED-PRD §4)` --semantically_similar_to--> `Architecture Lock (AGENTS.md)`  [INFERRED] [semantically similar]
   REVISED-PRD.md → AGENTS.md
+- `Sprint 0 CORS Fix (H-1)` --directly_addresses--> `OWASP A05 violation in main.py`  [EXTRACTED] ← **NEW**
+  testforge/test_analysis.md → backend/app/api/main.py
+- `Roadmap Section (landing page)` --references--> `PLAN-v1.4.md Sprint 0 + P1.3`  [EXTRACTED] ← **NEW**
+  web/src/app/page.tsx → PLAN-v1.4.md
+- `Infographic Purple palette` --semantically_identical_to--> `OC Design Tokens in dclaw-finance`  [INFERRED] ← **NEW**
+  Infographics/dclaw-migrate-infograph.html → dclaw-finance/infographics/dclaw-finance-infograph.html
 
 ## Hyperedges (group relationships)
 - **Database lifecycle: init_db on startup, get_db per request, Base for schema** — core_database_init_db, core_database_get_db, core_database_engine, models_base_base, core_config_settings [INFERRED 0.90]
@@ -108,8 +125,15 @@
 - **Getting Started Documentation Set** — getting_started_index_index, getting_started_installation_dpanel, getting_started_installation_kubectl, getting_started_quickstart_quickstart, getting_started_configuration_configuration [EXTRACTED 1.00]
 - **Troubleshooting Documentation Set** — troubleshooting_index_troubleshooting, troubleshooting_common_issues_app_wont_start, troubleshooting_common_issues_db_connection_error, troubleshooting_common_issues_frontend_backend, troubleshooting_faq_update_dclawapp, troubleshooting_faq_backup, troubleshooting_faq_scale, troubleshooting_faq_local_dev [EXTRACTED 1.00]
 - **Releases Documentation Set** — releases_index_releases, releases_changelog_v010, releases_roadmap_short_term, releases_roadmap_medium_term, releases_roadmap_long_term [EXTRACTED 1.00]
+- **Sprint 0 Hardening Items (H-1 to H-8)** — plan_v14_h1_cors, plan_v14_h2_rate_limit, plan_v14_h3_jwks_race, plan_v14_h4_sentry, plan_v14_h5_auth_test, plan_v14_h6_mutation, plan_v14_h7_posthog, plan_v14_h8_n1_audit [EXTRACTED 1.00] ← **NEW**
+- **TestForge Validated Findings** — testforge_h1_cors, testforge_h2_rate_limit, testforge_h3_jwks, testforge_h4_observability, testforge_h5_auth_bypass, testforge_h6_mutation [EXTRACTED 0.95] ← **NEW**
+- **Presentation Artifacts (Infographic + Deck)** — infographics_architecture_diagram_md, infographics_html, slides_deck_content_md, slides_html [EXTRACTED 1.00] ← **NEW**
+- **Obsidian Knowledge Vault Notes** — obsidian_migrate_architecture, obsidian_migrate_design_system, obsidian_migrate_v14_roadmap, obsidian_migrate_testforge [EXTRACTED 1.00] ← **NEW**
+- **PLAN-v1.4 Source Documents** — plan_v14_md, testforge_analysis_md, testforge_json, revised_prd_document [EXTRACTED 0.90] ← **NEW**
+- **Landing Page Roadmap Data** — page_tsx_roadmap_live, page_tsx_roadmap_next, plan_v14_sprint0, plan_v14_p04 [EXTRACTED 0.95] ← **NEW**
+- **Vercel Production Stack** — web_vercel_project_json, dclaw_migrate_deck_html, dclaw_migrate_infograph_html, page_tsx_landing [EXTRACTED 0.85] ← **NEW**
 
-## Communities (70 total, 36 thin omitted)
+## Communities (78 total, 36 thin omitted)
 
 ### Community 0 - "UI Component Library"
 Cohesion: 0.07
@@ -117,11 +141,11 @@ Nodes (36): shadcn/ui component pattern, Tailwind CSS design tokens via CSS vars
 
 ### Community 1 - "FastAPI Application Layer"
 Cohesion: 0.08
-Nodes (22): app (FastAPI application instance), lifespan(), # TODO: Wire v1 routers here after creating them, BaseSettings, Config, get_settings(), Settings, engine (async SQLAlchemy engine from settings.database_url) (+14 more)
+Nodes (22): app (FastAPI application instance), lifespan(), BaseSettings, Config, get_settings(), Settings, engine (async SQLAlchemy engine from settings.database_url) (+14 more)
 
 ### Community 2 - "Kubernetes / Helm Deployment"
 Cohesion: 0.09
-Nodes (29): Helm Chart: dclaw-migrate/dclaw-migrate (v0.1.0), Helm Value: image (ghcr.io/dclawstack/dclaw-migrate), Helm Value: ingress (nginx, migrate.dclawstack.io), Helm Value: postgresql (enabled, 10Gi storage), Helm Value: resources (cpu 500m/250m, memory 512Mi/256Mi), Helm Value: service (ClusterIP port 8121), Helm Value: serviceAccount (create: true), Configuration Guide (+21 more)
+Nodes (29): Helm Chart: dclaw-migrate/dclaw-migrate (v0.1.0), Helm Value: image, Helm Value: ingress, Helm Value: postgresql, Helm Value: resources, Helm Value: service, Configuration Guide (+21 more)
 
 ### Community 3 - "Frontend Dependencies"
 Cohesion: 0.08
@@ -129,11 +153,11 @@ Nodes (25): dependencies, autoprefixer, class-variance-authority, clsx, lucide-r
 
 ### Community 4 - "Architecture Anti-Patterns"
 Cohesion: 0.1
-Nodes (18): Anti-Patterns Table (AGENTS.md), Anti-Pattern: curl in healthcheck, Anti-Pattern: MappedAsDataclass in Base, Anti-Pattern: In-memory MOCK_* dicts, Anti-Pattern: shadcn CLI v4, Anti-Pattern: timezone-aware datetime in models, Pinned: pytest-asyncio==0.24.0, backend/requirements.txt (+10 more)
+Nodes (18): Anti-Patterns Table (AGENTS.md), Anti-Pattern: curl in healthcheck, Anti-Pattern: MappedAsDataclass in Base, Anti-Pattern: In-memory MOCK_* dicts, Anti-Pattern: shadcn CLI v4, Anti-Pattern: timezone-aware datetime, Pinned: pytest-asyncio==0.24.0, backend/requirements.txt (+10 more)
 
 ### Community 5 - "Next.js Frontend Pages"
 Cohesion: 0.13
-Nodes (13): assess() migration request function, DashboardPage component, inter, metadata, RootLayout(), Home(), API base URL configuration, MigrationPlan domain concept (+5 more)
+Nodes (14): DashboardPage component, inter, metadata, RootLayout(), Home(), API base URL configuration, MigrationPlan domain concept, **Roadmap section (Live + Next)** (+6 more) ← updated
 
 ### Community 6 - "TypeScript Configuration"
 Cohesion: 0.11
@@ -141,31 +165,31 @@ Nodes (18): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModu
 
 ### Community 7 - "K8s Backend Deployment"
 Cohesion: 0.12
-Nodes (18): Backend ContainerSpec (image: backend, port: 8000), Backend Deployment (Kubernetes), Backend Liveness Probe (/health/ port 8000), Backend Readiness Probe (/health/ port 8000), Backend SecretRef (dclaw-app-secrets), Frontend ContainerSpec (image: frontend, port: 3000), Frontend Deployment (Kubernetes), Replica Count (.Values.replicaCount) (+10 more)
+Nodes (18): Backend ContainerSpec, Backend Deployment (Kubernetes), Backend Liveness Probe, Replica Count (.Values.replicaCount) (+14 more)
 
 ### Community 8 - "Platform Config & Releases"
 Cohesion: 0.12
-Nodes (17): Config: NEXT_PUBLIC_API_URL, DClawApp CRD, Installation via kubectl (DClawApp CRD), Best Practice: Upgrades (staging, changelog, version compatibility), Release v0.1.0 — Initial Release, Releases Index (DClaw Migrate v0.1.0), Roadmap: Long Term (2027+), Roadmap: Medium Term (Q3-Q4 2026) (+9 more)
+Nodes (17): Config: NEXT_PUBLIC_API_URL, DClawApp CRD, Installation via kubectl, Best Practice: Upgrades, Release v0.1.0, Roadmap: Long Term, Roadmap: Medium Term (+9 more)
 
 ### Community 9 - "Developer Architecture Guide"
 Cohesion: 0.29
-Nodes (6): Architecture Lock (AGENTS.md), Port Registry (AGENTS.md), docs/reference/stack.md, Rationale: Patch not scaffold edit (immutable AGENTS.md/PLAN), REVISED-PRD.md v2.3, Sacred Tech Stack (REVISED-PRD §4)
+Nodes (6): Architecture Lock (AGENTS.md), Port Registry (AGENTS.md), docs/reference/stack.md, Rationale: Patch not scaffold edit, REVISED-PRD.md v2.3, Sacred Tech Stack (REVISED-PRD §4)
 
 ### Community 10 - "Docker Compose Services"
 Cohesion: 0.18
-Nodes (11): backend service (docker-compose), frontend service (docker-compose), postgres service (docker-compose), RFC 7807 Problem Details Error Format, Architecture: Frontend → Backend → Database, docs/README.md, docs/reference/api.md, docs/reference/architecture.md (+3 more)
+Nodes (11): backend service, frontend service, postgres service, RFC 7807 Error Format, Architecture: Frontend→Backend→Database, docs/reference/api.md, docs/reference/architecture.md (+4 more)
 
 ### Community 11 - "Repository / Data Access Layer"
 Cohesion: 0.27
-Nodes (3): BaseRepository, Generic async CRUD repository.      Subclass per entity:         class UserRepos, Select
+Nodes (3): BaseRepository, Generic async CRUD repository, Select
 
 ### Community 12 - "User Guides & Reference Docs"
 Cohesion: 0.22
-Nodes (9): Quickstart Guide, Best Practice: Security (PII Shield, API key rotation, network policies), Guides Index, Use Case: Infrastructure Workflows (AI-powered automation), API (Reference), Architecture (Reference), Reference Index, Stack (Reference) (+1 more)
+Nodes (9): Quickstart Guide, Best Practice: Security, Guides Index, Use Case: Infrastructure Workflows, API (Reference), Architecture (Reference), Reference Index, Stack (Reference) (+1 more)
 
 ### Community 13 - "Agent Prompt Templates"
 Cohesion: 0.22
-Nodes (9): Prompt 1: Backend Architect, Prompt 3: DevOps Engineer, Prompt 2: Frontend Builder, DClaw Scaffold Template, Parallel Agent Build Workflow, Phase 2: Shared Libraries (dclaw-core, @dclawstack/dkube), Backend Architect Agent Tab, DevOps Engineer Agent Tab (+1 more)
+Nodes (9): Prompt 1: Backend Architect, Prompt 3: DevOps Engineer, Prompt 2: Frontend Builder, DClaw Scaffold Template, Parallel Agent Build Workflow, Backend Architect Agent Tab, DevOps Engineer Agent Tab (+2 more)
 
 ### Community 14 - "Core Migration Domain Entities"
 Cohesion: 0.32
@@ -195,10 +219,52 @@ Nodes (3): Guideline: Simplicity First, Guideline: Surgical Changes, Guideline: 
 Cohesion: 0.5
 Nodes (4): P0.4: Data Validation & Reconciliation, P0.3: ETL Pipeline Builder, P1.5: Change Data Capture (CDC), P0.4: Data Migration
 
+### Community 57 - "Sprint 0: Engineering Hardening" ← **NEW**
+Cohesion: 0.85
+Nodes (8): H-1 CORS wildcard fix, H-2 Auth rate limiting (slowapi), H-3 JWKS cache race (asyncio.Lock), H-4 Sentry observability, H-5 Auth bypass in tests, H-6 Mutation score ≥60%, H-7 PostHog analytics, H-8 N+1 query audit
+Source: PLAN-v1.4.md Sprint 0 block
+
+### Community 58 - "TestForge Security Audit 2026-05-31" ← **NEW**
+Cohesion: 0.88
+Nodes (10): TestForge run 71/100, Security 0/100 (false positive), Mutation 34/100, Auth not rate limited (real), No observability (real), Implicit auth bypass (real), CORS violation (real), N+1 unscanned backend, Tier-2 tests 11/11 passed, Stack 39/100 (false negative)
+Source: testforge/testforge-dclaw-migrate.json + testforge/test_analysis.md
+
+### Community 59 - "Infographics & Presentation Artifacts" ← **NEW**
+Cohesion: 0.80
+Nodes (4): Infographics/architecture-diagram.md (9 Mermaid diagrams), Infographics/dclaw-migrate-infograph.html (OC purple 1200px), slides/deck-content.md (14-slide source), slides/dclaw-migrate-deck.html (1280×720 print-ready)
+Source: Infographics/ + slides/ folders
+
+### Community 60 - "Obsidian Knowledge Vault" ← **NEW**
+Cohesion: 0.90
+Nodes (4): Migrate-Architecture.md, Migrate-Design-System.md, Migrate-v1.4-Roadmap.md, Migrate-TestForge-2026-05-31.md
+Source: obsidian/ folder (new, created 2026-06-01)
+
+### Community 61 - "Landing Page: Roadmap Section" ← **NEW**
+Cohesion: 0.82
+Nodes (5): roadmapLive[] (14 items, v1.0 shipped), roadmapNext[] (10 items, Sprint 0→P1.3), FadeUp scroll animation, ibtf.app layout reference, Vercel prod deploy commit 2672411
+Source: web/src/app/page.tsx (section id="roadmap")
+
+### Community 62 - "PLAN v1.4: Implementation Plan" ← **NEW**
+Cohesion: 0.85
+Nodes (6): Sprint 0 Hardening (blocking), P0.4 Schema Expansion, P1.3 Agentic, P2 Scale Features, TestForge failure analysis input, Supersedes PLAN-v1.2.md
+Source: PLAN-v1.4.md
+
+### Community 63 - "OC Purple Design System" ← **NEW**
+Cohesion: 0.88
+Nodes (8): Purple #7030A0 (primary), #4A1F6C (dark), #B180F8 (light), #E7D8F4 (100), #F5EEFB (50), #FAF6FD (25), Manrope display font, JetBrains Mono labels
+Source: obsidian/Migrate-Design-System.md + HTML files
+
+### Community 64 - "Vercel Production Deployment" ← **NEW**
+Cohesion: 0.82
+Nodes (4): dclaw-migrate-web Vercel project, https://dclaw-migrate-web.vercel.app, web/.vercel/project.json, commit 2672411 (roadmap section)
+Source: web/.vercel/project.json + deploy logs
+
 ## Knowledge Gaps
-- **172 isolated node(s):** `# TODO: Wire v1 routers here after creating them`, `Config`, `Return a naive UTC datetime (no tzinfo).      PostgreSQL TIMESTAMP WITHOUT TIME`, `Base class for all SQLAlchemy models.      ALL models MUST inherit from this cla`, `Generic async CRUD repository.      Subclass per entity:         class UserRepos` (+167 more)
+- **172 isolated node(s):** `# TODO: Wire v1 routers here after creating them`, `Config`, `Return a naive UTC datetime (no tzinfo)`, `Base class for all SQLAlchemy models`, `Generic async CRUD repository` (+167 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **36 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **New gap (2026-06-01):** `obsidian/` vault notes are not yet cross-linked to graph nodes — Migrate-Architecture.md, Migrate-Design-System.md etc. are new corpus additions not yet wired to existing entity nodes.
+- **New gap:** Sprint 0 items (H-1 to H-8) are documented but not yet implemented — no corresponding code nodes exist for `slowapi`, `sentry-sdk`, `asyncio.Lock` in `_fetch_jwks`.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
@@ -207,12 +273,14 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.066) - this node is a cross-community bridge._
 - **Why does `BaseRepository` connect `Repository / Data Access Layer` to `FastAPI Application Layer`?**
   _High betweenness centrality (0.042) - this node is a cross-community bridge._
-- **Why does `Select` connect `Repository / Data Access Layer` to `UI Component Library`?**
-  _High betweenness centrality (0.041) - this node is a cross-community bridge._
-- **Are the 2 inferred relationships involving `Anti-Patterns Table (AGENTS.md)` (e.g. with `Input UI Component` and `.github/workflows/ci.yml`) actually correct?**
+- **Are the 2 inferred relationships involving `Anti-Patterns Table (AGENTS.md)` actually correct?**
   _`Anti-Patterns Table (AGENTS.md)` has 2 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `# TODO: Wire v1 routers here after creating them`, `Config`, `Return a naive UTC datetime (no tzinfo).      PostgreSQL TIMESTAMP WITHOUT TIME` to the rest of the system?**
-  _172 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `Sprint 0 Engineering Hardening` to the `FastAPI Application Layer`?** ← **NEW**
+  _H-1 (CORS in main.py), H-2 (slowapi middleware in main.py), H-3 (asyncio.Lock in auth.py) — all target the application entry layer._
+- **Why does `Roadmap Section (landing page)` reference both `PLAN-v1.4.md` and `testforge/test_analysis.md`?** ← **NEW**
+  _The Live/Next data in `roadmapLive[]` and `roadmapNext[]` arrays is directly derived from PLAN-v1.4 Sprint 0 and feature roadmap._
+- **What is the relationship between `TestForge Security 0/100` and `CORS violation in main.py`?** ← **NEW**
+  _The CORS issue was NOT detected by TestForge (scanner is JS-only for OWASP) — it was found via manual code review prompted by the TestForge report. This is a blind spot in the scanner._
 - **Should `UI Component Library` be split into smaller, more focused modules?**
   _Cohesion score 0.07 - nodes in this community are weakly interconnected._
 - **Should `FastAPI Application Layer` be split into smaller, more focused modules?**
